@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
+    "build": "echo 'No build step required'",
     "worker:excel": "node workers/excel.worker.js",
     "worker:analytics": "node workers/analytics.worker.js",
     "worker:report": "node workers/report.worker.js",
