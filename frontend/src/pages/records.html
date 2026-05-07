@@ -1,0 +1,19 @@
+<!-- PAGE: ALL RECORDS -->
+<div id="page-records" class="page">
+  <div class="search-bar">
+    <input type="text" id="search-inp" placeholder="🔍 Search..." oninput="renderRecords()" />
+    <button class="btn btn-add" onclick="switchTab('new')">➕ New</button>
+    <button class="btn btn-green" onclick="exportExcel()">📥 Excel</button>
+    <button id="btn-generate-ppt" class="btn btn-save" onclick="generatePPT()">
+      📊 Download PPT
+    </button>
+    <button id="btn-bulk-edit" class="btn btn-edit" type="button">🛠 Batch Mode</button>
+    <button id="delete-multiple-btn" class="btn btn-delete is-hidden" type="button">
+      🗑 Delete Selected
+    </button>
+    <button class="btn btn-save" type="button" id="download-filtered-ppt">
+      📊 FILTER PPT
+    </button>
+  </div>
+  <div id="records-container"></div>
+</div>

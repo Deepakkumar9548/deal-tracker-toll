@@ -1,0 +1,86 @@
+/* ─────────────────────────────────────────
+       PPT GENERATION STYLES
+    ───────────────────────────────────────── */
+.ppt-section { background: #ffffff; border: 1px solid #CBD5E0; border-radius: 6px; padding: 12px 14px; margin-bottom: 12px; font-family: 'Segoe UI'; }
+.ppt-title { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; }
+.ppt-title.red { color: #C0392B; }
+.ppt-title.blue { color: #1A5276; }
+.ppt-title.dark { color: #0D1B2A; }
+.ppt-textbox { border: 1px solid #CBD5E0; padding: 10px 12px; font-size: 14px; line-height: 1.5; border-radius: 4px; background: #fff; }
+.ppt-textbox.obs { border-left: 4px solid #C0392B; }
+.ppt-textbox.mgmt { background: #EBF5FB; border: 1px solid #85C1E9; border-left: 4px solid #1A5276; }
+.ppt-textbox.audit { background: #F7FAFC; border: 1px solid #CBD5E0; border-left: 4px solid #718096; }
+.label { font-size: 11px; color: #718096; text-transform: uppercase; }
+.value { font-size: 15px; font-weight: 700; color: #0D1B2A; }
+.key-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.key-item { display: flex; flex-direction: column; }
+.ppt-btn { padding: 6px 10px; font-size: 13px; border-radius: 4px; border: 1px solid #CBD5E0; background: #F0F4F8; cursor: pointer; text-align: center; }
+.ppt-btn.active-green { background: #1A7A45; color: white; border-color: #1A7A45; }
+.ppt-btn.active-blue { background: #0D1B2A; color: white; border-color: #0D1B2A; }
+.ppt-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ppt-table th { background: #1E3A52; color: white; font-size: 13px; padding: 6px; }
+.ppt-table td { padding: 6px; border-bottom: 1px solid #E2E8F0; }
+.ppt-table tr:nth-child(even) { background: #EEF2F6; }
+.row-gross { background: #132337; color: #C8A96E; font-weight: 600; }
+.row-net { background: #C0392B; color: white; font-weight: 700; font-size: 14px; }
+.final-box { border: 1px solid #CBD5E0; padding: 10px; }
+.final-option { display: flex; justify-content: space-between; align-items: center; padding: 6px; margin-bottom: 6px; border: 1px solid #CBD5E0; font-size: 14px; }
+.final-option.active { color: white; }
+.final-option.breach.active { background: #C0392B; }
+.final-option.nobreach.active { background: #1A7A45; }
+.final-option.hold.active { background: #B7770D; }
+.checkbox { font-size: 16px; font-weight: bold; }
+.doc-box { width: 70px; height: 60px; border: 1px solid #CBD5E0; border-radius: 6px; text-align: center; padding-top: 6px; background: #F5F7FA; font-size: 11px; }
+.doc-box.active { background: #EAF4FF; }
+
+/* PPT INSPIRED FORM */
+.ppt-page { background: #FFFFFF; border: 1px solid #000; border-radius: 0; max-width: 1100px; margin: 0 auto; overflow: hidden; display: flex; flex-direction: column; font-family: 'Calibri', sans-serif; color: #000; margin-bottom: 20px; }
+.ppt-header { background: #0D1B2A; height: 60px; display: flex; align-items: center; padding: 0 15px; color: white; border-bottom: 1px solid #000; }
+.ppt-header-left { display: flex; align-items: center; gap: 10px; width: 220px; }
+.ppt-logo { width: 40px; height: 40px; background: #C8A96E; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid #000; }
+.ppt-brand-main { font-size: 14px; font-weight: 700; }
+.ppt-brand-sub { font-size: 9px; color: #AABCCC; }
+.ppt-header-center { flex: 1; text-align: center; }
+.ppt-input-cname { background: transparent !important; border: none !important; color: white !important; font-size: 22px !important; font-weight: 700 !important; text-align: center; width: 100% !important; height: auto !important; padding: 0 !important; }
+.ppt-input-sub { background: transparent !important; border: none !important; color: #AABCCC !important; font-size: 10px !important; width: auto !important; display: inline-block !important; padding: 0 !important; height: auto !important; text-align: center; }
+.ppt-body { display: grid; grid-template-columns: 320px 1fr; padding: 10px; gap: 15px; background: #fff; }
+.ppt-sec-label { background: #D6EAF8; border: 1px solid #000; color: #000; font-size: 11px; font-weight: 700; padding: 4px 8px; margin-bottom: 5px; text-transform: uppercase; }
+.ppt-sec-label.gold { background: #FCF3CF; }
+.ppt-sec-label.red { background: #FADBD8; }
+.ppt-sec-label.blue { background: #D6EAF8; }
+.ppt-sec-label.dark { background: #D5DBDB; }
+.ppt-left { display: flex; flex-direction: column; }
+.ppt-obs-no { display: flex; align-items: center; gap: 5px; margin-bottom: 10px; font-weight: 700; }
+.ppt-obs-label { background: #C0392B; color: white; font-size: 10px; padding: 2px 6px; border: 1px solid #000; }
+.ppt-summary-box { background: #FFF9C4; border: 1px solid #000; padding: 8px; font-size: 12px; margin-bottom: 10px; }
+.ppt-dealer-bar { background: #F2F4F4; border: 1px solid #000; color: #000; padding: 4px 8px; font-size: 10px; display: flex; gap: 10px; margin-bottom: 10px; }
+.ppt-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; border: 1px solid #000; }
+.ppt-table th { background: #D6EAF8; color: #000; font-size: 11px; font-weight: 700; padding: 4px; border: 1px solid #000; }
+.ppt-table td { padding: 3px 5px; border: 1px solid #000; font-size: 11px; }
+.ppt-table input { background: transparent !important; border: none !important; width: 100% !important; text-align: right; padding: 0 !important; height: auto !important; font-family: 'Calibri', sans-serif; font-size: 11px !important; color: #000 !important; }
+.ppt-row-gross { background: #FCF3CF !important; font-weight: 700; }
+.ppt-row-gross td { border-top: 2px solid #000; }
+.ppt-disc-header { background: #D6EAF8; border: 1px solid #000; padding: 3px 8px; font-size: 11px; font-weight: 700; }
+.ppt-row-net { background: #FADBD8 !important; font-weight: 700; }
+.ppt-row-net td { border-top: 2px solid #000; }
+.ppt-row-net input { font-weight: 700; font-size: 12px !important; }
+.ppt-top-info { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+.ppt-info-card { background: #fff; border: 1px solid #000; padding: 8px; }
+.ppt-info-label { font-size: 10px; font-weight: 700; background: #D6EAF8; padding: 2px 5px; margin-bottom: 5px; border-bottom: 1px solid #000; display: block; }
+.ppt-key-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.ppt-key-lbl { font-size: 9px; color: #555; font-weight: 700; }
+.ppt-key-inp { border: 1px solid #000 !important; background: #fff !important; font-size: 10px !important; padding: 2px !important; height: 20px !important; }
+.ppt-obs-details-box { background: #fff; border: 1px solid #000; padding: 10px; font-size: 13px; margin-bottom: 15px; min-height: 50px; }
+.ppt-mgmt-box { background: #EBF5FB; border: 1px solid #000; padding: 10px; margin-bottom: 15px; }
+.ppt-mgmt-name { background: #fff !important; border: 1px solid #000 !important; font-weight: 700 !important; font-size: 11px !important; margin-bottom: 5px !important; height: 22px !important; }
+.ppt-mgmt-textarea { background: #fff !important; border: 1px solid #000 !important; width: 100% !important; font-size: 11px !important; min-height: 80px !important; padding: 5px !important; }
+.ppt-bottom-row { display: grid; grid-template-columns: 1fr 220px; gap: 10px; }
+.ppt-docs-area { background: #fff; border: 1px solid #000; padding: 8px; }
+.ppt-docs-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+.ppt-doc-pill { width: 55px; height: 45px; border: 1px solid #000; background: #F2F4F4; font-size: 9px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; }
+.ppt-doc-pill.done { background: #D6EAF8; }
+.ppt-decision-panel { border: 1px solid #000; background: #fff; }
+.ppt-decision-hdr { background: #0D1B2A; color: white; text-align: center; font-size: 11px; font-weight: 700; padding: 3px; }
+.ppt-decision-select { width: 100% !important; border: none !important; border-bottom: 1px solid #000 !important; padding: 5px !important; font-size: 13px !important; font-weight: 700 !important; height: 35px !important; }
+.ppt-decision-status { text-align: center; font-size: 14px; font-weight: 700; padding: 8px; background: #D6EAF8; }
+.ppt-footer { background: #0D1B2A; color: white; height: 25px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; font-size: 9px; border-top: 1px solid #000; }

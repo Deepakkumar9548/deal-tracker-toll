@@ -1,0 +1,3387 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DealTrack Pro — Insurance Calculator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+      :root {
+        --bg: #0a1628;
+        --bg2: #0f1e38;
+        --bg3: #162545;
+        --card: rgba(255, 255, 255, 0.03);
+        --card-hover: rgba(255, 255, 255, 0.06);
+        --border: rgba(100, 160, 255, 0.12);
+        --border2: rgba(100, 160, 255, 0.22);
+        --accent: #3b82f6;
+        --accent2: #60a5fa;
+        --gold: #f59e0b;
+        --green: #10b981;
+        --red: #ef4444;
+        --orange: #f97316;
+        --white: #e2eeff;
+        --grey: #6b87b8;
+        --grey2: #4a6489;
+        --font: "Syne", sans-serif;
+        --mono: "DM Mono", monospace;
+        --radius: 12px;
+        --radius-lg: 18px;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--white);
+        min-height: 100vh;
+        display: flex;
+        overflow-x: hidden;
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg2);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--bg3);
+        border-radius: 10px;
+      }
+
+      /* ── MAINBAR ── */
+      .mainbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-right: 18px;
+        border-right: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .logo-icon {
+        width: 34px;
+        height: 34px;
+        background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+      .logo-text {
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        line-height: 1.2;
+      }
+      .logo-sub {
+        font-size: 10px;
+        color: var(--grey);
+        font-family: var(--mono);
+        letter-spacing: 0.5px;
+      }
+      .mainbar-title {
+        min-width: 220px;
+        flex-shrink: 0;
+      }
+      .mainbar-nav {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: 9px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--grey);
+        transition: all 0.2s;
+        border: 1px solid transparent;
+        user-select: none;
+      }
+      .nav-item:hover {
+        background: var(--card-hover);
+        color: var(--white);
+      }
+      .nav-item.active {
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0.18),
+          rgba(59, 130, 246, 0.08)
+        );
+        color: var(--accent2);
+        border-color: rgba(59, 130, 246, 0.25);
+      }
+      .nav-item .ni {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+      }
+
+      /* ── MAIN ── */
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        width: 100%;
+      }
+      .topbar {
+        background: var(--bg2);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+        flex: 1;
+        flex-wrap: wrap;
+      }
+      .page-title {
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+      }
+      .page-sub {
+        font-size: 12px;
+        color: var(--grey);
+        font-family: var(--mono);
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+      .badge-count {
+        background: rgba(59, 130, 246, 0.15);
+        color: var(--accent2);
+        font-size: 11px;
+        font-family: var(--mono);
+        padding: 3px 9px;
+        border-radius: 20px;
+        border: 1px solid rgba(59, 130, 246, 0.25);
+      }
+
+      .content {
+        padding: 24px 28px;
+        flex: 1;
+      }
+
+      /* ── TABS ── */
+      .tab-bar {
+        display: flex;
+        gap: 4px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        padding: 4px;
+        margin-bottom: 24px;
+        width: fit-content;
+      }
+      .tab-btn {
+        padding: 8px 22px;
+        border-radius: 8px;
+        border: none;
+        font-family: var(--font);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: var(--grey);
+        background: transparent;
+        letter-spacing: 0.2px;
+      }
+      .tab-btn.active {
+        background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+        color: white;
+      }
+
+      /* ── STAT CARDS ── */
+      .stat-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        transition: border-color 0.2s;
+      }
+      .stat-card:hover {
+        border-color: var(--border2);
+      }
+      .stat-label {
+        font-size: 11px;
+        color: var(--grey);
+        font-family: var(--mono);
+        letter-spacing: 0.4px;
+        margin-bottom: 6px;
+      }
+      .stat-val {
+        font-size: 24px;
+        font-weight: 700;
+        font-family: var(--mono);
+        color: var(--white);
+      }
+      .stat-val.blue {
+        color: var(--accent2);
+      }
+      .stat-val.green {
+        color: var(--green);
+      }
+      .stat-val.gold {
+        color: var(--gold);
+      }
+      .stat-val.orange {
+        color: var(--orange);
+      }
+      .stat-trend {
+        font-size: 11px;
+        color: var(--grey);
+        margin-top: 4px;
+        font-family: var(--mono);
+      }
+
+      /* ── PANELS ── */
+      .panel {
+        display: none;
+      }
+      .panel.active {
+        display: block;
+      }
+
+      /* ── FORM GRID ── */
+      .form-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 20px 22px;
+        margin-bottom: 16px;
+      }
+      .form-card-title {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        color: var(--grey);
+        text-transform: uppercase;
+        font-family: var(--mono);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .form-card-title::before {
+        content: "";
+        display: block;
+        width: 3px;
+        height: 14px;
+        background: var(--accent);
+        border-radius: 2px;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 12px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--grey);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-family: var(--mono);
+      }
+      input[type="number"],
+      input[type="text"],
+      select {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 9px 12px;
+        font-size: 13px;
+        color: var(--white);
+        font-family: var(--font);
+        font-weight: 500;
+        outline: none;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+        width: 100%;
+      }
+      input:focus,
+      select:focus {
+        border-color: var(--accent);
+        background: rgba(59, 130, 246, 0.08);
+      }
+      select option {
+        background: #162545;
+        color: var(--white);
+      }
+      input::placeholder {
+        color: var(--grey2);
+      }
+
+      /* ── BUTTONS ── */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 26px;
+        border-radius: 10px;
+        border: none;
+        background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+        color: white;
+        font-family: var(--font);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        letter-spacing: 0.3px;
+      }
+      .btn-primary:hover {
+        opacity: 0.88;
+      }
+      .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 10px;
+        border: 1px solid var(--border2);
+        background: transparent;
+        color: var(--white);
+        font-family: var(--font);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-secondary:hover {
+        background: var(--card-hover);
+        border-color: var(--accent);
+      }
+      .btn-success {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 10px;
+        border: none;
+        background: linear-gradient(135deg, #065f46, #10b981);
+        color: white;
+        font-family: var(--font);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+      .btn-success:hover {
+        opacity: 0.88;
+      }
+      .btn-danger {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: none;
+        background: rgba(239, 68, 68, 0.12);
+        color: var(--red);
+        font-family: var(--font);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+      }
+      .btn-danger:hover {
+        background: rgba(239, 68, 68, 0.2);
+      }
+      .btn-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
+
+      /* ── RESULTS ── */
+      .results-card {
+        background: linear-gradient(
+          135deg,
+          rgba(29, 78, 216, 0.15),
+          rgba(59, 130, 246, 0.08)
+        );
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: var(--radius-lg);
+        padding: 22px 24px;
+        margin-top: 16px;
+        animation: fadeIn 0.4s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+      .result-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .r-label {
+        font-size: 10px;
+        color: var(--grey);
+        font-family: var(--mono);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .r-val {
+        font-size: 17px;
+        font-weight: 700;
+        font-family: var(--mono);
+        color: var(--white);
+      }
+      .r-val.big {
+        font-size: 28px;
+        color: var(--accent2);
+      }
+      .r-val.green {
+        color: var(--green);
+      }
+      .r-val.gold {
+        color: var(--gold);
+      }
+      .r-val.red {
+        color: var(--red);
+      }
+      .r-divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 16px 0;
+      }
+
+      /* ── DETAIL TABLE ── */
+      .detail-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 0;
+      }
+      .detail-tab {
+        padding: 10px 18px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--grey);
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        font-family: var(--mono);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .detail-tab.active {
+        color: var(--accent2);
+        border-bottom-color: var(--accent2);
+      }
+      .detail-content {
+        display: none;
+        padding: 16px 0 4px;
+      }
+      .detail-content.active {
+        display: block;
+      }
+      table.detail-tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12.5px;
+      }
+      table.detail-tbl th {
+        background: rgba(59, 130, 246, 0.08);
+        padding: 9px 12px;
+        text-align: left;
+        font-weight: 600;
+        color: var(--grey);
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+      }
+      table.detail-tbl th:not(:first-child) {
+        text-align: right;
+      }
+      table.detail-tbl td {
+        padding: 8px 12px;
+        border-top: 1px solid var(--border);
+        color: var(--white);
+        font-family: var(--mono);
+      }
+      table.detail-tbl td:not(:first-child) {
+        text-align: right;
+        color: var(--grey);
+      }
+      table.detail-tbl tr.subtotal td {
+        font-weight: 700;
+        color: var(--white);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      table.detail-tbl tr.grand td {
+        font-weight: 700;
+        color: var(--accent2);
+        font-size: 13px;
+      }
+
+      /* ── BULK UPLOAD ── */
+      .drop-zone {
+        border: 2px dashed var(--border2);
+        border-radius: var(--radius-lg);
+        padding: 40px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: var(--card);
+      }
+      .drop-zone:hover,
+      .drop-zone.drag-over {
+        border-color: var(--accent);
+        background: rgba(59, 130, 246, 0.06);
+      }
+      .drop-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+      }
+      .drop-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .drop-sub {
+        font-size: 12px;
+        color: var(--grey);
+        font-family: var(--mono);
+      }
+      #fileInput {
+        display: none;
+      }
+
+      .progress-wrap {
+        background: var(--bg3);
+        border-radius: 20px;
+        height: 6px;
+        overflow: hidden;
+        margin: 12px 0;
+      }
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #1d4ed8, #3b82f6, #60a5fa);
+        border-radius: 20px;
+        transition: width 0.4s ease;
+        width: 0;
+      }
+
+      /* ── BULK TABLE ── */
+      .bulk-table-wrap {
+        overflow-x: auto;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        margin-top: 16px;
+      }
+      table.bulk-tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        min-width: 1100px;
+      }
+      table.bulk-tbl thead tr {
+        background: rgba(59, 130, 246, 0.1);
+        border-bottom: 1px solid var(--border2);
+      }
+      table.bulk-tbl th {
+        padding: 10px 10px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--grey);
+        font-family: var(--mono);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      table.bulk-tbl th:not(:first-child):not(:last-child) {
+        cursor: pointer;
+      }
+      table.bulk-tbl th:not(:first-child):not(:last-child):hover {
+        color: var(--accent2);
+      }
+      table.bulk-tbl tbody tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        transition: background 0.15s;
+      }
+      table.bulk-tbl tbody tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      table.bulk-tbl td {
+        padding: 8px 10px;
+        color: var(--white);
+        vertical-align: middle;
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+      table.bulk-tbl td:first-child {
+        color: var(--grey2);
+        text-align: center;
+        width: 36px;
+      }
+      table.bulk-tbl td input,
+      table.bulk-tbl td select {
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        padding: 5px 8px;
+        font-size: 12px;
+        color: var(--white);
+        font-family: var(--mono);
+        width: 100%;
+        min-width: 90px;
+        outline: none;
+      }
+      table.bulk-tbl td input:focus,
+      table.bulk-tbl td select:focus {
+        border-color: var(--accent);
+        background: rgba(59, 130, 246, 0.1);
+      }
+      table.bulk-tbl td select option {
+        background: #162545;
+      }
+      .prem-cell {
+        color: var(--accent2) !important;
+        font-weight: 600;
+      }
+      .err-row td {
+        background: rgba(239, 68, 68, 0.05) !important;
+      }
+      .err-badge {
+        font-size: 10px;
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--red);
+        padding: 2px 7px;
+        border-radius: 20px;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+      }
+      .ok-badge {
+        font-size: 10px;
+        background: rgba(16, 185, 129, 0.12);
+        color: var(--green);
+        padding: 2px 7px;
+        border-radius: 20px;
+        border: 1px solid rgba(16, 185, 129, 0.25);
+      }
+
+      /* ── SEARCH / FILTER BAR ── */
+      .filter-bar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      .search-input {
+        flex: 1;
+        min-width: 200px;
+        max-width: 300px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-size: 13px;
+        color: var(--white);
+        font-family: var(--font);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .search-input:focus {
+        border-color: var(--accent);
+      }
+      .search-input::placeholder {
+        color: var(--grey2);
+      }
+      .bulk-summary {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.12),
+          rgba(16, 185, 129, 0.05)
+        );
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        border-radius: var(--radius);
+        padding: 14px 18px;
+        margin-top: 14px;
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+      .bs-item {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .bs-label {
+        font-size: 10px;
+        color: var(--grey);
+        font-family: var(--mono);
+        letter-spacing: 0.5px;
+      }
+      .bs-val {
+        font-size: 18px;
+        font-weight: 700;
+        font-family: var(--mono);
+        color: var(--green);
+      }
+      .bs-val.blue {
+        color: var(--accent2);
+      }
+
+      /* ── PAGINATION ── */
+      .pagination {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+      .pg-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 7px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--grey);
+        font-family: var(--mono);
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      .pg-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent2);
+      }
+      .pg-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+      .pg-info {
+        font-size: 11px;
+        color: var(--grey);
+        font-family: var(--mono);
+        padding: 0 8px;
+      }
+
+      /* ── TOAST ── */
+      .toast-wrap {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .toast {
+        background: var(--bg3);
+        border: 1px solid var(--border2);
+        border-radius: 10px;
+        padding: 12px 18px;
+        font-size: 13px;
+        font-weight: 500;
+        min-width: 240px;
+        max-width: 340px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        animation: slideIn 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .toast.success {
+        border-color: rgba(16, 185, 129, 0.4);
+        color: var(--green);
+      }
+      .toast.error {
+        border-color: rgba(239, 68, 68, 0.4);
+        color: var(--red);
+      }
+      .toast.info {
+        border-color: rgba(59, 130, 246, 0.4);
+        color: var(--accent2);
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* ── HISTORY ── */
+      .history-grid {
+        display: grid;
+        gap: 10px;
+      }
+      .history-item {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .history-item:hover {
+        border-color: var(--border2);
+        background: var(--card-hover);
+      }
+      .hist-left {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .hist-id {
+        font-size: 11px;
+        color: var(--grey);
+        font-family: var(--mono);
+      }
+      .hist-title {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .hist-sub {
+        font-size: 12px;
+        color: var(--grey);
+      }
+      .hist-prem {
+        font-size: 18px;
+        font-weight: 700;
+        font-family: var(--mono);
+        color: var(--accent2);
+      }
+
+      /* ── BULK BRAND SELECTOR ── */
+      .bulk-brand-card {
+        background: var(--bg2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-lg);
+        padding: 18px 22px;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+      .bulk-brand-label {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.7px;
+        color: var(--grey);
+        font-family: var(--mono);
+        text-transform: uppercase;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .bulk-brand-select {
+        flex: 1;
+        min-width: 220px;
+        max-width: 320px;
+        background: rgba(59, 130, 246, 0.08);
+        border: 1.5px solid rgba(59, 130, 246, 0.35);
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--white);
+        font-family: var(--font);
+        outline: none;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
+      .bulk-brand-select:focus {
+        border-color: var(--accent2);
+        background: rgba(59, 130, 246, 0.14);
+      }
+      .bulk-brand-select option {
+        background: #162545;
+      }
+      .bulk-brand-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .btn-apply-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 18px;
+        border-radius: 9px;
+        border: none;
+        background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+        color: #fff;
+        font-family: var(--font);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        white-space: nowrap;
+      }
+      .btn-apply-brand:hover {
+        opacity: 0.88;
+      }
+      .btn-filter-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 18px;
+        border-radius: 9px;
+        border: 1px solid var(--border2);
+        background: transparent;
+        color: var(--white);
+        font-family: var(--font);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .btn-filter-brand:hover {
+        background: var(--card-hover);
+        border-color: var(--accent);
+      }
+      .brand-active-pill {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        background: rgba(59, 130, 246, 0.12);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 20px;
+        padding: 5px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent2);
+        font-family: var(--mono);
+      }
+      .brand-active-pill.show {
+        display: inline-flex;
+      }
+      .brand-pill-close {
+        background: none;
+        border: none;
+        color: var(--grey);
+        cursor: pointer;
+        font-size: 14px;
+        padding: 0 0 0 4px;
+        line-height: 1;
+      }
+      .brand-pill-close:hover {
+        color: var(--red);
+      }
+      .bulk-brand-info {
+        font-size: 11px;
+        color: var(--grey);
+        font-family: var(--mono);
+        line-height: 1.6;
+      }
+      .bulk-brand-info strong {
+        color: var(--accent2);
+      }
+      .brand-tariff-badge {
+        display: inline-block;
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.25);
+        color: var(--gold);
+        font-size: 11px;
+        font-family: var(--mono);
+        padding: 2px 9px;
+        border-radius: 20px;
+        margin-left: 6px;
+      }
+
+      @media (max-width: 900px) {
+        .stat-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .topbar {
+          align-items: stretch;
+          flex-direction: column;
+        }
+        .topbar-right {
+          justify-content: space-between;
+        }
+        .mainbar-brand {
+          border-right: 0;
+          padding-right: 0;
+        }
+        .mainbar-title {
+          min-width: 0;
+        }
+      }
+      @media (max-width: 500px) {
+        .stat-row {
+          grid-template-columns: 1fr;
+        }
+        .content {
+          padding: 16px;
+        }
+        .topbar {
+          padding: 12px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- MAIN -->
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="mainbar-brand">
+            <div class="logo-icon">🚗</div>
+            <div>
+              <div class="logo-text">DealTrack Pro</div>
+              <div class="logo-sub">INSURANCE SUITE</div>
+            </div>
+          </div>
+          <div class="mainbar-title">
+            <div class="page-title" id="pageTitle">Dashboard</div>
+            <div class="page-sub" id="pageSub">
+              Multi-Brand Insurance Premium Calculator
+            </div>
+          </div>
+          <div class="mainbar-nav">
+            <div class="nav-item active" onclick="switchNav('dashboard', this)">
+              <span class="ni">📊</span>Dashboard
+            </div>
+            <div class="nav-item" onclick="switchNav('calculator', this)">
+              <span class="ni">🧮</span>Calculator
+            </div>
+            <div class="nav-item" onclick="switchNav('bulk', this)">
+              <span class="ni">📂</span>Bulk Upload
+            </div>
+            <div class="nav-item" onclick="switchNav('history', this)">
+              <span class="ni">🕒</span>Quote History
+            </div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="badge-count" id="quoteCount">0 Quotes</span>
+          <button class="btn-secondary" onclick="downloadMasterExcel()">
+            ⬇ Export All
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- ══ DASHBOARD ══ -->
+        <div class="panel active" id="panel-dashboard">
+          <div class="stat-row" id="statRow">
+            <div class="stat-card">
+              <div class="stat-label">TOTAL QUOTES</div>
+              <div class="stat-val blue" id="ds-quotes">0</div>
+              <div class="stat-trend">all time</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">TOTAL PREMIUM</div>
+              <div class="stat-val green" id="ds-prem">₹0</div>
+              <div class="stat-trend">3Y gross</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">AVG PREMIUM</div>
+              <div class="stat-val gold" id="ds-avg">₹0</div>
+              <div class="stat-trend">per vehicle</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">BULK RECORDS</div>
+              <div class="stat-val orange" id="ds-bulk">0</div>
+              <div class="stat-trend">uploaded</div>
+            </div>
+          </div>
+          <div
+            style="
+              background: var(--card);
+              border: 1px solid var(--border);
+              border-radius: var(--radius-lg);
+              padding: 20px 22px;
+            "
+          >
+            <div class="form-card-title">Recent Activity</div>
+            <div
+              id="dash-recent"
+              style="
+                color: var(--grey);
+                font-family: var(--mono);
+                font-size: 13px;
+                padding: 20px 0;
+                text-align: center;
+              "
+            >
+              No quotes yet. Start by using the Calculator ›
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ CALCULATOR ══ -->
+        <div class="panel" id="panel-calculator">
+          <!-- Vehicle Details -->
+          <div class="form-card">
+            <div class="form-card-title">Vehicle Details</div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Calculator / Brand</label>
+                <select id="insurer" onchange="onBrandChange()">
+                  <option value="">Select Calculator</option>
+                  <option value="kia">Kia Calculator</option>
+                  <option value="hyundai">Hyundai Calculator</option>
+                  <option value="mahindra">Mahindra Calculator</option>
+                  <option value="force">Force Calculator</option>
+                  <option value="mg">MG Calculator</option>
+                  <option value="tata">Tata Calculator</option>
+                  <option value="skoda">Škoda Calculator</option>
+                </select>
+                <span
+                  id="brandIndicator"
+                  style="
+                    display: none;
+                    margin-top: 5px;
+                    font-size: 11px;
+                    font-family: var(--mono);
+                    color: var(--accent2);
+                    background: rgba(59, 130, 246, 0.1);
+                    border: 1px solid rgba(59, 130, 246, 0.25);
+                    border-radius: 6px;
+                    padding: 3px 10px;
+                    width: fit-content;
+                  "
+                ></span>
+              </div>
+              <div class="field">
+                <label>Ex-Showroom Price (₹)</label>
+                <input
+                  type="number"
+                  id="exPrice"
+                  value="1209000"
+                  placeholder="e.g. 1200000"
+                  oninput="liveCalc()"
+                />
+              </div>
+              <div class="field">
+                <label>Cubic Capacity</label>
+                <select id="cc" onchange="liveCalc()">
+                  <option value="below1000">Below 1000 cc</option>
+                  <option value="1000-1500" selected>1000 – 1500 cc</option>
+                  <option value="above1500">Above 1500 cc</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Registration Zone</label>
+                <select id="zone" onchange="liveCalc()">
+                  <option value="A">
+                    Zone A (Mumbai, Delhi, Chennai, Kolkata, Bengaluru,
+                    Hyderabad, Ahmedabad, Pune)
+                  </option>
+                  <option value="B" selected>Zone B (Rest of India)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Model Type</label>
+                <select id="modelType" onchange="liveCalc()">
+                  <option value="Premium">Premium</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Quote Reference</label>
+                <input
+                  type="text"
+                  id="quoteRef"
+                  placeholder="e.g. HY-2025-001"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Add-ons & Discounts -->
+          <div class="form-card">
+            <div class="form-card-title">Add-ons & Discounts</div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Add-on Combo</label>
+                <select id="addon" onchange="liveCalc()">
+                  <option value="Not Required">Not Required</option>
+                  <option value="ZD">ZD (Zero Depreciation)</option>
+                  <option value="ZD+CM">ZD + CM</option>
+                  <option value="ZD+EP">ZD + EP</option>
+                  <option value="ZD+EP+CM">ZD + EP + CM</option>
+                  <option value="RTI">RTI (Return to Invoice)</option>
+                  <option value="ZD+RTI">ZD + RTI</option>
+                  <option value="ZD+CM+RTI">ZD + CM + RTI</option>
+                  <option value="ZD+EP+RTI">ZD + EP + RTI</option>
+                  <option value="ZD+EP+CM+RTI" selected>
+                    ZD + EP + CM + RTI
+                  </option>
+                </select>
+              </div>
+              <div class="field">
+                <label>OD Discount (%)</label>
+                <input
+                  type="number"
+                  id="odDisc"
+                  value="45"
+                  min="0"
+                  max="70"
+                  step="1"
+                  oninput="liveCalc()"
+                />
+              </div>
+              <div class="field">
+                <label>NCB Discount (₹)</label>
+                <input
+                  type="number"
+                  id="ncb"
+                  value="0"
+                  min="0"
+                  oninput="liveCalc()"
+                />
+              </div>
+              <div class="field">
+                <label>Geographical Extension</label>
+                <select id="geoExt" onchange="liveCalc()">
+                  <option value="No" selected>No</option>
+                  <option value="Yes">Yes (+4% on OD)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accessories & Covers -->
+          <div class="form-card">
+            <div class="form-card-title">Accessories & Covers</div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Non-Elec. Accessories (₹)</label
+                ><input
+                  type="number"
+                  id="nonElec"
+                  value="0"
+                  min="0"
+                  oninput="liveCalc()"
+                />
+              </div>
+              <div class="field">
+                <label>Electrical Accessories (₹)</label
+                ><input
+                  type="number"
+                  id="elecAcc"
+                  value="0"
+                  min="0"
+                  oninput="liveCalc()"
+                />
+              </div>
+              <div class="field">
+                <label>Bi-Fuel CNG Kit (₹)</label
+                ><input
+                  type="number"
+                  id="cng"
+                  value="0"
+                  min="0"
+                  oninput="liveCalc()"
+                />
+              </div>
+              <div class="field">
+                <label>Anti-Theft Device</label>
+                <select id="atd" onchange="liveCalc()">
+                  <option value="No" selected>No</option>
+                  <option value="Yes">Yes (−2.5% on OD)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>AA Membership</label>
+                <select id="aa" onchange="liveCalc()">
+                  <option value="No" selected>No</option>
+                  <option value="Yes">Yes (−₹50/yr)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>PA Cover Unnamed Pass. (₹)</label
+                ><input
+                  type="number"
+                  id="paPass"
+                  value="100000"
+                  min="0"
+                  oninput="liveCalc()"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-primary" onclick="calcAndSave()">
+              🧮 Calculate & Save Quote
+            </button>
+            <button class="btn-secondary" onclick="resetCalc()">↺ Reset</button>
+            <button class="btn-success" onclick="downloadSingleExcel()">
+              ⬇ Download Excel
+            </button>
+          </div>
+
+          <!-- RESULTS -->
+          <div id="singleResults" style="display: none">
+            <div class="results-card" style="margin-top: 20px">
+              <!-- Summary Top -->
+              <div class="result-grid" id="resultGrid"></div>
+              <hr class="r-divider" />
+              <!-- Detail Tabs -->
+              <div class="detail-tabs">
+                <div
+                  class="detail-tab active"
+                  onclick="switchDetailTab('idv', this)"
+                >
+                  IDV
+                </div>
+                <div class="detail-tab" onclick="switchDetailTab('od', this)">
+                  OD Premium
+                </div>
+                <div class="detail-tab" onclick="switchDetailTab('tp', this)">
+                  Liability (B)
+                </div>
+                <div
+                  class="detail-tab"
+                  onclick="switchDetailTab('grand', this)"
+                >
+                  Grand Total
+                </div>
+              </div>
+              <div id="tab-idv" class="detail-content active"></div>
+              <div id="tab-od" class="detail-content"></div>
+              <div id="tab-tp" class="detail-content"></div>
+              <div id="tab-grand" class="detail-content"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ BULK UPLOAD ══ -->
+        <div class="panel" id="panel-bulk">
+          <!-- ── BRAND SELECTOR CARD ── -->
+          <div class="bulk-brand-card">
+            <span class="bulk-brand-label">🏷️ Select Calculator</span>
+            <select
+              class="bulk-brand-select"
+              id="bulkBrandSelect"
+              onchange="onBulkBrandSelectChange()"
+            >
+              <option value="">— Choose Brand Calculator —</option>
+              <option value="kia">Kia Calculator</option>
+              <option value="hyundai">Hyundai Calculator</option>
+              <option value="mahindra">Mahindra Calculator</option>
+              <option value="force">Force Motors Calculator</option>
+              <option value="mg">MG Motor Calculator</option>
+              <option value="tata">Tata Motors Calculator</option>
+              <option value="skoda">Škoda Calculator</option>
+            </select>
+            <div class="bulk-brand-actions">
+              <button
+                class="btn-apply-brand"
+                onclick="applyBrandToAll()"
+                title="Set this brand on every row and recalculate"
+              >
+                ⚡ Apply to All Rows
+              </button>
+              <button
+                class="btn-filter-brand"
+                onclick="filterByBrand()"
+                title="Show only rows of this brand"
+              >
+                🔍 Filter by Brand
+              </button>
+              <button
+                class="btn-filter-brand"
+                onclick="clearBrandFilter()"
+                title="Show all rows"
+              >
+                ✕ Clear Filter
+              </button>
+            </div>
+            <span class="brand-active-pill" id="brandActivePill">
+              <span id="brandPillText">Hyundai Calculator</span>
+              <button class="brand-pill-close" onclick="clearBrandFilter()">
+                ×
+              </button>
+            </span>
+          </div>
+
+          <!-- Brand info strip (shown after selection) -->
+          <div
+            id="bulkBrandInfoStrip"
+            style="display: none; margin-bottom: 14px"
+          >
+            <div class="bulk-brand-info" id="bulkBrandInfoText"></div>
+          </div>
+          <div
+            class="drop-zone"
+            id="dropZone"
+            onclick="document.getElementById('fileInput').click()"
+            ondragover="onDragOver(event)"
+            ondragleave="onDragLeave(event)"
+            ondrop="onDrop(event)"
+          >
+            <div class="drop-icon">📂</div>
+            <div class="drop-title">Drag & Drop your Excel / CSV file here</div>
+            <div class="drop-sub" style="margin-top: 6px">
+              Supports .xlsx, .xls, .csv · Up to 1000 records
+            </div>
+            <div class="drop-sub" style="margin-top: 4px">
+              Required columns: <strong>Brand</strong> (kia / hyundai / mahindra
+              / force / mg / tata / skoda), Ex_Showroom, CC, Zone, Model_Type,
+              Addon, OD_Discount, NCB, Non_Elec, Elec, CNG, ATD, AA, PA_Pass
+            </div>
+            <input
+              type="file"
+              id="fileInput"
+              accept=".xlsx,.xls,.csv"
+              onchange="handleFileUpload(this.files[0])"
+            />
+            <button
+              class="btn-primary"
+              style="margin-top: 16px; pointer-events: none"
+            >
+              📁 Browse File
+            </button>
+          </div>
+
+          <!-- Template Download -->
+          <div style="margin-top: 10px">
+            <button class="btn-secondary" onclick="downloadTemplate()">
+              ⬇ Download Template Excel
+            </button>
+            <span
+              style="
+                font-size: 12px;
+                color: var(--grey);
+                margin-left: 12px;
+                font-family: var(--mono);
+              "
+              >Use template for correct column format</span
+            >
+          </div>
+
+          <div class="progress-wrap" id="progressWrap" style="display: none">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+
+          <div id="bulkArea" style="display: none">
+            <div class="filter-bar" style="margin-top: 20px">
+              <input
+                type="text"
+                class="search-input"
+                placeholder="🔍 Search model, zone, insurer..."
+                id="bulkSearch"
+                oninput="filterBulk()"
+              />
+              <select
+                id="bulkFilterStatus"
+                style="max-width: 160px"
+                onchange="filterBulk()"
+              >
+                <option value="">All Rows</option>
+                <option value="ok">Valid Only</option>
+                <option value="err">Errors Only</option>
+              </select>
+              <button class="btn-primary" onclick="processBulk()">
+                ⚡ Process All
+              </button>
+              <button class="btn-success" onclick="downloadBulkExcel()">
+                ⬇ Export Excel
+              </button>
+              <button class="btn-danger" onclick="clearBulk()">🗑 Clear</button>
+              <span class="badge-count" id="bulkCountBadge">0 rows</span>
+            </div>
+
+            <div class="bulk-table-wrap">
+              <table class="bulk-tbl" id="bulkTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th style="min-width: 150px">Brand / Calculator</th>
+                    <th>Ex-Showroom ₹ ↕</th>
+                    <th onclick="sortBulk('cc')">CC ↕</th>
+                    <th onclick="sortBulk('zone')">Zone ↕</th>
+                    <th>Model Type</th>
+                    <th>Add-on</th>
+                    <th onclick="sortBulk('odDisc')">OD Disc% ↕</th>
+                    <th>NCB (₹)</th>
+                    <th>Non-Elec</th>
+                    <th>Elec Acc</th>
+                    <th>CNG</th>
+                    <th>ATD</th>
+                    <th>AA</th>
+                    <th>PA Pass</th>
+                    <th onclick="sortBulk('premium')">Premium ₹ ↕</th>
+                    <th>Status</th>
+                    <th>Del</th>
+                  </tr>
+                </thead>
+                <tbody id="bulkBody"></tbody>
+              </table>
+            </div>
+
+            <div class="pagination" id="bulkPagination"></div>
+
+            <div class="bulk-summary" id="bulkSummary">
+              <div class="bs-item">
+                <div class="bs-label">TOTAL RECORDS</div>
+                <div class="bs-val blue" id="bs-count">0</div>
+              </div>
+              <div class="bs-item">
+                <div class="bs-label">VALID</div>
+                <div class="bs-val" id="bs-valid">0</div>
+              </div>
+              <div class="bs-item">
+                <div class="bs-label">ERRORS</div>
+                <div class="bs-val" style="color: var(--red)" id="bs-errors">
+                  0
+                </div>
+              </div>
+              <div class="bs-item">
+                <div class="bs-label">TOTAL EX-SHOWROOM</div>
+                <div class="bs-val blue" id="bs-exval">₹0</div>
+              </div>
+              <div class="bs-item">
+                <div class="bs-label">TOTAL 1Y PREMIUM</div>
+                <div class="bs-val" id="bs-prem1">₹0</div>
+              </div>
+              <div class="bs-item">
+                <div class="bs-label">TOTAL 3Y PREMIUM</div>
+                <div class="bs-val" id="bs-prem3">₹0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ HISTORY ══ -->
+        <div class="panel" id="panel-history">
+          <div
+            style="
+              display: flex;
+              gap: 10px;
+              margin-bottom: 18px;
+              flex-wrap: wrap;
+            "
+          >
+            <input
+              type="text"
+              class="search-input"
+              placeholder="🔍 Search quotes..."
+              id="histSearch"
+              oninput="filterHistory()"
+            />
+            <button class="btn-danger" onclick="clearHistory()">
+              🗑 Clear History
+            </button>
+          </div>
+          <div class="history-grid" id="historyGrid">
+            <div
+              style="
+                text-align: center;
+                padding: 40px;
+                color: var(--grey);
+                font-family: var(--mono);
+              "
+            >
+              No saved quotes yet.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast-wrap" id="toastWrap"></div>
+
+    <script>
+      // ════════════════════════════════════════════════════════
+      //  BRAND / CALCULATOR LIST
+      // ════════════════════════════════════════════════════════
+      const BRAND_LIST = [
+        "kia",
+        "hyundai",
+        "mahindra",
+        "force",
+        "mg",
+        "tata",
+        "skoda",
+      ];
+
+      const BRAND_LABELS = {
+        kia: "Kia Calculator",
+        hyundai: "Hyundai Calculator",
+        mahindra: "Mahindra Calculator",
+        force: "Force Calculator",
+        mg: "MG Calculator",
+        tata: "Tata Calculator",
+        skoda: "Škoda Calculator",
+      };
+
+      function isValidBrand(brand) {
+        return BRAND_LIST.includes(brand.toLowerCase().trim());
+      }
+
+      function normBrand(raw) {
+        const s = String(raw || "")
+          .toLowerCase()
+          .trim();
+        // direct match
+        if (BRAND_LIST.includes(s)) return s;
+        // partial / alias match
+        if (s.includes("kia")) return "kia";
+        if (s.includes("hyundai")) return "hyundai";
+        if (s.includes("mahindra")) return "mahindra";
+        if (s.includes("force")) return "force";
+        if (s.includes("mg") || s.includes("morris")) return "mg";
+        if (s.includes("tata")) return "tata";
+        if (s.includes("skoda") || s.includes("škoda")) return "skoda";
+        return s || "hyundai"; // default fallback
+      }
+
+      // ════════════════════════════════════════════════════════
+      //  PER-BRAND CONFIGURATION TABLE
+      //  Each brand has: tariff, tpRate, dep, addonRates,
+      //  defaultOdDisc, modelTypes, ccOptions
+      // ════════════════════════════════════════════════════════
+      const BRAND_CONFIGS = {
+        // ── HYUNDAI ────────────────────────────────────────────
+        hyundai: {
+          label: "Hyundai Calculator",
+          defaultOdDisc: 45,
+          dep: [0.05, 0.2, 0.3],
+          tariff: {
+            below1000: { A: 2.719, B: 2.719 },
+            "1000-1500": { A: 3.191, B: 3.191 },
+            above1500: { A: 3.671, B: 3.671 },
+          },
+          tpRate: { below1000: 6455, "1000-1500": 10640, above1500: 16049 },
+          modelTypes: ["Premium", "Others"],
+          modelTypeDesc: {
+            Premium: "Premium — Creta, Venue, Verna, Elantra, Tucson, Alcazar",
+            Others: "Others — i10, i20, Grand i10, Santro, Aura, Exter",
+          },
+          addonRates: {
+            Premium: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.004, 0.0042, 0.005],
+              "ZD+CM": [0.005, 0.0052, 0.0065],
+              "ZD+EP": [0.0055, 0.0057, 0.007],
+              "ZD+EP+CM": [0.006, 0.0065, 0.0085],
+              RTI: [0.0015, 0.002, 0.003],
+              "ZD+RTI": [0.0055, 0.0062, 0.008],
+              "ZD+CM+RTI": [0.0065, 0.0072, 0.0095],
+              "ZD+EP+RTI": [0.007, 0.0077, 0.01],
+              "ZD+EP+CM+RTI": [0.0075, 0.0085, 0.0115],
+            },
+            Others: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0045, 0.0047, 0.0055],
+              "ZD+CM": [0.0055, 0.0057, 0.007],
+              "ZD+EP": [0.006, 0.0062, 0.0075],
+              "ZD+EP+CM": [0.0065, 0.007, 0.009],
+              RTI: [0.002, 0.003, 0.004],
+              "ZD+RTI": [0.0065, 0.0077, 0.0095],
+              "ZD+CM+RTI": [0.0075, 0.0087, 0.011],
+              "ZD+EP+RTI": [0.008, 0.0092, 0.0115],
+              "ZD+EP+CM+RTI": [0.0085, 0.01, 0.013],
+            },
+          },
+        },
+
+        // ── KIA ────────────────────────────────────────────────
+        kia: {
+          label: "Kia Calculator",
+          defaultOdDisc: 45,
+          dep: [0.05, 0.2, 0.3],
+          tariff: {
+            below1000: { A: 2.819, B: 2.819 },
+            "1000-1500": { A: 3.391, B: 3.391 },
+            above1500: { A: 3.871, B: 3.871 },
+          },
+          tpRate: { below1000: 6455, "1000-1500": 10640, above1500: 16049 },
+          modelTypes: ["Premium", "Others"],
+          modelTypeDesc: {
+            Premium: "Premium — Seltos, Carnival, EV6, EV9, Syros",
+            Others: "Others — Sonet, Carens",
+          },
+          addonRates: {
+            Premium: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0042, 0.0044, 0.0052],
+              "ZD+CM": [0.0052, 0.0055, 0.0068],
+              "ZD+EP": [0.0057, 0.006, 0.0073],
+              "ZD+EP+CM": [0.0062, 0.0068, 0.0088],
+              RTI: [0.0017, 0.0022, 0.0032],
+              "ZD+RTI": [0.0057, 0.0065, 0.0082],
+              "ZD+CM+RTI": [0.0067, 0.0075, 0.0099],
+              "ZD+EP+RTI": [0.0072, 0.008, 0.0105],
+              "ZD+EP+CM+RTI": [0.0078, 0.0088, 0.012],
+            },
+            Others: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0047, 0.0049, 0.0058],
+              "ZD+CM": [0.0057, 0.006, 0.0073],
+              "ZD+EP": [0.0062, 0.0065, 0.0079],
+              "ZD+EP+CM": [0.0068, 0.0073, 0.0094],
+              RTI: [0.0022, 0.0032, 0.0042],
+              "ZD+RTI": [0.0068, 0.008, 0.0099],
+              "ZD+CM+RTI": [0.0078, 0.009, 0.0115],
+              "ZD+EP+RTI": [0.0082, 0.0095, 0.012],
+              "ZD+EP+CM+RTI": [0.0088, 0.0105, 0.0135],
+            },
+          },
+        },
+
+        // ── MAHINDRA ───────────────────────────────────────────
+        mahindra: {
+          label: "Mahindra Calculator",
+          defaultOdDisc: 40,
+          dep: [0.05, 0.2, 0.3],
+          tariff: {
+            below1000: { A: 2.719, B: 2.719 },
+            "1000-1500": { A: 3.391, B: 3.391 },
+            above1500: { A: 3.971, B: 3.971 },
+          },
+          tpRate: { below1000: 6455, "1000-1500": 10640, above1500: 16049 },
+          modelTypes: ["Premium", "Others"],
+          modelTypeDesc: {
+            Premium: "Premium — XUV700, Thar, Scorpio N, XUV400 EV, BE 6E",
+            Others: "Others — Bolero, XUV300, XUV 3XO, Scorpio Classic",
+          },
+          addonRates: {
+            Premium: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0042, 0.0044, 0.0052],
+              "ZD+CM": [0.0053, 0.0055, 0.0069],
+              "ZD+EP": [0.0058, 0.006, 0.0074],
+              "ZD+EP+CM": [0.0063, 0.007, 0.009],
+              RTI: [0.0016, 0.0021, 0.0031],
+              "ZD+RTI": [0.0058, 0.0064, 0.0083],
+              "ZD+CM+RTI": [0.0068, 0.0074, 0.0097],
+              "ZD+EP+RTI": [0.0073, 0.008, 0.0104],
+              "ZD+EP+CM+RTI": [0.0079, 0.009, 0.012],
+            },
+            Others: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0046, 0.0048, 0.0056],
+              "ZD+CM": [0.0056, 0.0058, 0.0071],
+              "ZD+EP": [0.0061, 0.0064, 0.0077],
+              "ZD+EP+CM": [0.0067, 0.0072, 0.0092],
+              RTI: [0.0021, 0.0031, 0.0041],
+              "ZD+RTI": [0.0067, 0.0079, 0.0097],
+              "ZD+CM+RTI": [0.0077, 0.0089, 0.0113],
+              "ZD+EP+RTI": [0.0081, 0.0094, 0.0118],
+              "ZD+EP+CM+RTI": [0.0087, 0.0104, 0.0133],
+            },
+          },
+        },
+
+        // ── FORCE MOTORS ───────────────────────────────────────
+        force: {
+          label: "Force Motors Calculator",
+          defaultOdDisc: 35,
+          dep: [0.05, 0.2, 0.3],
+          tariff: {
+            below1000: { A: 2.619, B: 2.619 },
+            "1000-1500": { A: 3.491, B: 3.491 },
+            above1500: { A: 4.071, B: 4.071 },
+          },
+          tpRate: { below1000: 6455, "1000-1500": 10640, above1500: 16049 },
+          modelTypes: ["Utility", "Others"],
+          modelTypeDesc: {
+            Utility: "Utility — Gurkha, Traveller 3350, Trax Cruiser",
+            Others: "Others — Force Citiline, Urbania",
+          },
+          addonRates: {
+            Utility: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0045, 0.0048, 0.0057],
+              "ZD+CM": [0.0056, 0.0059, 0.0073],
+              "ZD+EP": [0.0061, 0.0064, 0.0078],
+              "ZD+EP+CM": [0.0067, 0.0073, 0.0094],
+              RTI: [0.0018, 0.0024, 0.0034],
+              "ZD+RTI": [0.0061, 0.0068, 0.0087],
+              "ZD+CM+RTI": [0.0071, 0.0078, 0.0101],
+              "ZD+EP+RTI": [0.0076, 0.0084, 0.0108],
+              "ZD+EP+CM+RTI": [0.0082, 0.0093, 0.0124],
+            },
+            Others: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0048, 0.0051, 0.006],
+              "ZD+CM": [0.0059, 0.0062, 0.0076],
+              "ZD+EP": [0.0064, 0.0067, 0.0082],
+              "ZD+EP+CM": [0.007, 0.0076, 0.0098],
+              RTI: [0.0022, 0.0033, 0.0044],
+              "ZD+RTI": [0.007, 0.0083, 0.0102],
+              "ZD+CM+RTI": [0.008, 0.0093, 0.0118],
+              "ZD+EP+RTI": [0.0085, 0.0099, 0.0124],
+              "ZD+EP+CM+RTI": [0.009, 0.0108, 0.0138],
+            },
+          },
+        },
+
+        // ── MG MOTOR ──────────────────────────────────────────
+        mg: {
+          label: "MG Motor Calculator",
+          defaultOdDisc: 50,
+          dep: [0.05, 0.2, 0.3],
+          tariff: {
+            below1000: { A: 2.819, B: 2.819 },
+            "1000-1500": { A: 3.491, B: 3.491 },
+            above1500: { A: 4.071, B: 4.071 },
+          },
+          tpRate: { below1000: 6455, "1000-1500": 10640, above1500: 16049 },
+          modelTypes: ["Premium", "Standard"],
+          modelTypeDesc: {
+            Premium: "Premium — Gloster, Hector Plus, ZS EV Long Range",
+            Standard: "Standard — Hector, ZS EV, Windsor EV, Comet EV",
+          },
+          addonRates: {
+            Premium: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0044, 0.0046, 0.0055],
+              "ZD+CM": [0.0055, 0.0058, 0.0072],
+              "ZD+EP": [0.006, 0.0063, 0.0077],
+              "ZD+EP+CM": [0.0066, 0.0072, 0.0092],
+              RTI: [0.0018, 0.0023, 0.0033],
+              "ZD+RTI": [0.006, 0.0067, 0.0086],
+              "ZD+CM+RTI": [0.007, 0.0077, 0.01],
+              "ZD+EP+RTI": [0.0075, 0.0083, 0.0107],
+              "ZD+EP+CM+RTI": [0.0081, 0.0092, 0.0123],
+            },
+            Standard: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0048, 0.005, 0.0059],
+              "ZD+CM": [0.0059, 0.0061, 0.0075],
+              "ZD+EP": [0.0064, 0.0066, 0.0081],
+              "ZD+EP+CM": [0.007, 0.0075, 0.0096],
+              RTI: [0.0023, 0.0034, 0.0045],
+              "ZD+RTI": [0.007, 0.0082, 0.0101],
+              "ZD+CM+RTI": [0.008, 0.0092, 0.0117],
+              "ZD+EP+RTI": [0.0084, 0.0098, 0.0122],
+              "ZD+EP+CM+RTI": [0.009, 0.0107, 0.0137],
+            },
+          },
+        },
+
+        // ── TATA MOTORS ───────────────────────────────────────
+        tata: {
+          label: "Tata Motors Calculator",
+          defaultOdDisc: 45,
+          dep: [0.05, 0.2, 0.3],
+          tariff: {
+            below1000: { A: 2.619, B: 2.619 },
+            "1000-1500": { A: 3.091, B: 3.091 },
+            above1500: { A: 3.571, B: 3.571 },
+          },
+          tpRate: { below1000: 6455, "1000-1500": 10640, above1500: 16049 },
+          modelTypes: ["Premium", "Others"],
+          modelTypeDesc: {
+            Premium: "Premium — Harrier, Safari, Nexon EV Max, Punch EV",
+            Others: "Others — Tiago, Tigor, Nexon, Altroz, Punch",
+          },
+          addonRates: {
+            Premium: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.004, 0.0042, 0.005],
+              "ZD+CM": [0.005, 0.0052, 0.0065],
+              "ZD+EP": [0.0055, 0.0057, 0.007],
+              "ZD+EP+CM": [0.006, 0.0065, 0.0085],
+              RTI: [0.0015, 0.002, 0.003],
+              "ZD+RTI": [0.0055, 0.0062, 0.008],
+              "ZD+CM+RTI": [0.0064, 0.0071, 0.0094],
+              "ZD+EP+RTI": [0.0069, 0.0076, 0.0099],
+              "ZD+EP+CM+RTI": [0.0074, 0.0084, 0.0113],
+            },
+            Others: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0044, 0.0046, 0.0054],
+              "ZD+CM": [0.0054, 0.0056, 0.0069],
+              "ZD+EP": [0.0059, 0.0061, 0.0074],
+              "ZD+EP+CM": [0.0064, 0.0069, 0.0089],
+              RTI: [0.0019, 0.0029, 0.0039],
+              "ZD+RTI": [0.0064, 0.0076, 0.0095],
+              "ZD+CM+RTI": [0.0074, 0.0086, 0.0111],
+              "ZD+EP+RTI": [0.0079, 0.0091, 0.0116],
+              "ZD+EP+CM+RTI": [0.0084, 0.0102, 0.0131],
+            },
+          },
+        },
+
+        // ── ŠKODA ─────────────────────────────────────────────
+        skoda: {
+          label: "Škoda Calculator",
+          defaultOdDisc: 50,
+          dep: [0.05, 0.2, 0.3],
+          tariff: {
+            below1000: { A: 2.919, B: 2.919 },
+            "1000-1500": { A: 3.591, B: 3.591 },
+            above1500: { A: 4.171, B: 4.171 },
+          },
+          tpRate: { below1000: 6455, "1000-1500": 10640, above1500: 16049 },
+          modelTypes: ["Premium", "Standard"],
+          modelTypeDesc: {
+            Premium: "Premium — Kodiaq, Superb, Octavia",
+            Standard: "Standard — Slavia, Kushaq, Karoq",
+          },
+          addonRates: {
+            Premium: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0045, 0.0048, 0.0057],
+              "ZD+CM": [0.0056, 0.006, 0.0074],
+              "ZD+EP": [0.0061, 0.0065, 0.0079],
+              "ZD+EP+CM": [0.0068, 0.0074, 0.0095],
+              RTI: [0.002, 0.0025, 0.0035],
+              "ZD+RTI": [0.0063, 0.007, 0.009],
+              "ZD+CM+RTI": [0.0073, 0.008, 0.0104],
+              "ZD+EP+RTI": [0.0078, 0.0086, 0.011],
+              "ZD+EP+CM+RTI": [0.0085, 0.0095, 0.0127],
+            },
+            Standard: {
+              "Not Required": [0, 0, 0],
+              ZD: [0.0049, 0.0052, 0.0062],
+              "ZD+CM": [0.006, 0.0064, 0.0078],
+              "ZD+EP": [0.0066, 0.007, 0.0084],
+              "ZD+EP+CM": [0.0073, 0.0079, 0.01],
+              RTI: [0.0025, 0.0036, 0.0047],
+              "ZD+RTI": [0.0073, 0.0086, 0.0106],
+              "ZD+CM+RTI": [0.0084, 0.0097, 0.0122],
+              "ZD+EP+RTI": [0.0089, 0.0103, 0.0128],
+              "ZD+EP+CM+RTI": [0.0095, 0.0112, 0.0143],
+            },
+          },
+        },
+      }; // end BRAND_CONFIGS
+
+      const fmt = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
+      const fmtN = (n) => Math.round(n).toLocaleString("en-IN");
+      const sum = (arr) => arr.reduce((a, b) => a + b, 0);
+
+      // Helper – get brand config safely
+      function getBrandCfg(brand) {
+        return BRAND_CONFIGS[brand] || BRAND_CONFIGS["hyundai"];
+      }
+
+      // ════════════════════════════════════════════════════════
+      //  CORE CALCULATION FUNCTION  (brand-aware)
+      // ════════════════════════════════════════════════════════
+      function calcInsurance(p) {
+        const ex = +p.ex || 0;
+        const cc = p.cc || "1000-1500";
+        const zone = p.zone || "B";
+        const mt = p.mt || "Premium";
+        const brand = p.brand || "hyundai";
+        const addon = p.addon || "Not Required";
+        const odDiscPct = +p.odDisc / 100 || 0;
+        const ncb = +p.ncb || 0;
+        const ne = +p.ne || 0;
+        const ea = +p.ea || 0;
+        const cng = +p.cng || 0;
+        const paPassAmt = +p.paPass || 0;
+        const atd = p.atd === "Yes";
+        const aa = p.aa === "Yes";
+        const geo = p.geo === "Yes";
+        if (ex <= 0) return null;
+
+        const cfg = getBrandCfg(brand);
+        const DEP = cfg.dep;
+        const tariff = (cfg.tariff[cc] || cfg.tariff["1000-1500"])[zone];
+        const addonMap =
+          cfg.addonRates[mt] || cfg.addonRates[Object.keys(cfg.addonRates)[0]];
+        const addonR = addonMap[addon] || [0, 0, 0];
+        const tpBase = cfg.tpRate[cc] || 10640;
+
+        const idv = [],
+          neidv = [],
+          eaidv = [],
+          tidv = [];
+        for (let i = 0; i < 3; i++) {
+          idv[i] = Math.round(ex * (1 - DEP[i]));
+          neidv[i] = Math.round(ne * (1 - DEP[i]));
+          eaidv[i] = Math.round(ea * (1 - DEP[i]));
+          tidv[i] = idv[i] + neidv[i] + eaidv[i];
+        }
+
+        const basicOD = [],
+          aoP = [],
+          neP = [],
+          eaP = [],
+          cngP = [],
+          partA = [];
+        for (let i = 0; i < 3; i++) {
+          const raw = (idv[i] * tariff) / 100;
+          const atdD = atd ? Math.round(raw * (1 - odDiscPct) * 0.025) : 0;
+          const aaD = aa ? 50 : 0;
+          const geoA = geo ? Math.round(raw * (1 - odDiscPct) * 0.04) : 0;
+          basicOD[i] = Math.round(raw * (1 - odDiscPct) - ncb);
+          neP[i] = Math.round(((neidv[i] * tariff) / 100) * (1 - odDiscPct));
+          eaP[i] = Math.round(((eaidv[i] * tariff) / 100) * (1 - odDiscPct));
+          cngP[i] = i === 0 ? Math.round(cng * 0.04 * (1 - odDiscPct)) : 0;
+          aoP[i] = Math.round(tidv[i] * addonR[i]);
+          partA[i] =
+            basicOD[i] + neP[i] + eaP[i] + cngP[i] + aoP[i] + geoA - atdD - aaD;
+        }
+
+        const tpl = tpBase;
+        const tpcng = cng > 0 ? 1500 : 0;
+        const paod = 1022;
+        const paup = paPassAmt > 0 ? Math.round((paPassAmt / 100000) * 750) : 0;
+        const llpd = 150;
+        const partB = tpl + tpcng + paod + paup + llpd;
+        const totalPrem = [partA[0] + partB, partA[1], partA[2]];
+        const gst = totalPrem.map((v) => Math.round(v * 0.18));
+        const gross = totalPrem.map((v, i) => v + gst[i]);
+
+        return {
+          ex,
+          cc,
+          zone,
+          mt,
+          brand,
+          addon,
+          odDiscPct,
+          ncb,
+          ne,
+          ea,
+          cng,
+          paPassAmt,
+          atd,
+          aa,
+          geo,
+          tariff,
+          addonR,
+          tpBase,
+          idv,
+          neidv,
+          eaidv,
+          tidv,
+          basicOD,
+          neP,
+          eaP,
+          cngP,
+          aoP,
+          partA,
+          tpl,
+          tpcng,
+          paod,
+          paup,
+          llpd,
+          partB,
+          totalPrem,
+          gst,
+          gross,
+          DEP,
+        };
+      }
+
+      // ════════════════════════════════════════════════════════
+      //  SINGLE CALCULATOR — brand-aware
+      // ════════════════════════════════════════════════════════
+      let lastR = null;
+
+      // Called whenever brand dropdown changes — refreshes Model Type, OD disc default
+      function onBrandChange() {
+        const brand = document.getElementById("insurer").value || "hyundai";
+        const cfg = getBrandCfg(brand);
+
+        // Update Model Type dropdown
+        const mtSel = document.getElementById("modelType");
+        const curMt = mtSel.value;
+        mtSel.innerHTML = cfg.modelTypes
+          .map(
+            (mt) =>
+              `<option value="${mt}"${mt === curMt ? " selected" : ""}>${cfg.modelTypeDesc[mt]}</option>`,
+          )
+          .join("");
+
+        // Set default OD discount for this brand
+        const odEl = document.getElementById("odDisc");
+        odEl.value = cfg.defaultOdDisc;
+
+        // Brand indicator badge
+        const badge = document.getElementById("brandIndicator");
+        if (badge) {
+          badge.textContent = "📌 " + cfg.label;
+          badge.style.display = "inline-flex";
+        }
+
+        liveCalc();
+      }
+
+      function getFormParams() {
+        return {
+          brand: document.getElementById("insurer").value || "hyundai",
+          ex: +document.getElementById("exPrice").value,
+          cc: document.getElementById("cc").value,
+          zone: document.getElementById("zone").value,
+          mt: document.getElementById("modelType").value,
+          addon: document.getElementById("addon").value,
+          odDisc: +document.getElementById("odDisc").value,
+          ncb: +document.getElementById("ncb").value,
+          ne: +document.getElementById("nonElec").value,
+          ea: +document.getElementById("elecAcc").value,
+          cng: +document.getElementById("cng").value,
+          paPass: +document.getElementById("paPass").value,
+          atd: document.getElementById("atd").value,
+          aa: document.getElementById("aa").value,
+          geo: document.getElementById("geoExt").value,
+        };
+      }
+
+      function liveCalc() {
+        const p = getFormParams();
+        const R = calcInsurance(p);
+        if (!R) return;
+        lastR = R;
+        renderResults(R);
+        document.getElementById("singleResults").style.display = "block";
+      }
+
+      function renderResults(R) {
+        const grid = document.getElementById("resultGrid");
+        grid.innerHTML = `
+    <div class="result-item"><div class="r-label">3Y TP + 1Y OD</div><div class="r-val big">${fmt(R.gross[0])}</div></div>
+    <div class="result-item"><div class="r-label">3Y TP + 3Y OD</div><div class="r-val big">${fmt(sum(R.gross))}</div></div>
+    <div class="result-item"><div class="r-label">OD Y1 (net)</div><div class="r-val gold">${fmt(R.partA[0])}</div></div>
+    <div class="result-item"><div class="r-label">TP (3Y)</div><div class="r-val">${fmt(R.partB)}</div></div>
+    <div class="result-item"><div class="r-label">GST Total</div><div class="r-val">${fmt(sum(R.gst))}</div></div>
+    <div class="result-item"><div class="r-label">IDV Year 1</div><div class="r-val green">${fmt(R.idv[0])}</div></div>
+  `;
+
+        // IDV Tab
+        document.getElementById("tab-idv").innerHTML = `
+  <table class="detail-tbl"><thead><tr><th>Component</th><th>Year 1</th><th>Year 2</th><th>Year 3</th></tr></thead>
+  <tbody>
+    <tr><td>Depreciation Rate</td><td>5%</td><td>20%</td><td>30%</td></tr>
+    <tr><td>Vehicle IDV</td>${R.idv.map((v) => `<td>${fmt(v)}</td>`).join("")}</tr>
+    <tr><td>Non-Elec. Acc IDV</td>${R.neidv.map((v) => `<td>${fmt(v)}</td>`).join("")}</tr>
+    <tr><td>Electrical Acc IDV</td>${R.eaidv.map((v) => `<td>${fmt(v)}</td>`).join("")}</tr>
+    <tr class="subtotal"><td>Total IDV</td>${R.tidv.map((v) => `<td>${fmt(v)}</td>`).join("")}</tr>
+  </tbody></table>`;
+
+        // OD Tab
+        document.getElementById("tab-od").innerHTML = `
+  <table class="detail-tbl"><thead><tr><th>Component</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Total</th></tr></thead>
+  <tbody>
+    <tr><td>Tariff Rate (${BRAND_LABELS[R.brand] || R.brand})</td>${[0, 1, 2].map(() => `<td>${R.tariff.toFixed(3)}%</td>`).join("")}<td>—</td></tr>
+    <tr><td>Vehicle Basic OD</td>${R.basicOD.map((v) => `<td>${fmt(v)}</td>`).join("")}<td>${fmt(sum(R.basicOD))}</td></tr>
+    <tr><td>Non-Elec. Accessories</td>${R.neP.map((v) => `<td>${fmt(v)}</td>`).join("")}<td>${fmt(sum(R.neP))}</td></tr>
+    <tr><td>Electrical Accessories</td>${R.eaP.map((v) => `<td>${fmt(v)}</td>`).join("")}<td>${fmt(sum(R.eaP))}</td></tr>
+    <tr><td>Bi-Fuel CNG</td>${R.cngP.map((v) => `<td>${fmt(v)}</td>`).join("")}<td>${fmt(sum(R.cngP))}</td></tr>
+    <tr><td>Add-on Premium</td>${R.aoP.map((v) => `<td>${fmt(v)}</td>`).join("")}<td>${fmt(sum(R.aoP))}</td></tr>
+    <tr class="subtotal"><td>Part A Total</td>${R.partA.map((v) => `<td>${fmt(v)}</td>`).join("")}<td>${fmt(sum(R.partA))}</td></tr>
+  </tbody></table>`;
+
+        // TP Tab
+        document.getElementById("tab-tp").innerHTML = `
+  <table class="detail-tbl"><thead><tr><th>Component</th><th>Amount</th></tr></thead>
+  <tbody>
+    <tr><td>Basic Third Party Liability</td><td>${fmt(R.tpl)}</td></tr>
+    <tr><td>TP for Bi-Fuel Kit</td><td>${fmt(R.tpcng)}</td></tr>
+    <tr><td>PA Cover — Owner Driver (3Y)</td><td>${fmt(R.paod)}</td></tr>
+    <tr><td>PA Cover — Unnamed Passengers</td><td>${fmt(R.paup)}</td></tr>
+    <tr><td>Legal Liability — Paid Driver</td><td>${fmt(R.llpd)}</td></tr>
+    <tr class="subtotal"><td>Part B Total</td><td>${fmt(R.partB)}</td></tr>
+  </tbody></table>`;
+
+        // Grand Total Tab
+        document.getElementById("tab-grand").innerHTML = `
+  <table class="detail-tbl"><thead><tr><th>Component</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>3Y Total</th></tr></thead>
+  <tbody>
+    <tr><td>Total Premium (A+B)</td>${R.totalPrem.map((v) => `<td>${fmt(v)}</td>`).join("")}<td>${fmt(sum(R.totalPrem))}</td></tr>
+    <tr><td>GST (18%)</td>${R.gst.map((v) => `<td>${fmt(v)}</td>`).join("")}<td>${fmt(sum(R.gst))}</td></tr>
+    <tr class="grand"><td>Gross Premium</td>${R.gross.map((v) => `<td>${fmt(v)}</td>`).join("")}<td>${fmt(sum(R.gross))}</td></tr>
+  </tbody></table>`;
+      }
+
+      function calcAndSave() {
+        const p = getFormParams();
+        const R = calcInsurance(p);
+        if (!R) {
+          toast("Enter a valid Ex-Showroom price!", "error");
+          return;
+        }
+        lastR = R;
+        renderResults(R);
+        document.getElementById("singleResults").style.display = "block";
+        // Save to history
+        const ref =
+          document.getElementById("quoteRef").value || "QT-" + Date.now();
+        const ins =
+          BRAND_LABELS[document.getElementById("insurer").value] ||
+          document.getElementById("insurer").value ||
+          "—";
+        const rec = {
+          id: ref,
+          insurer: ins,
+          ex: p.ex,
+          cc: p.cc,
+          zone: p.zone,
+          mt: p.mt,
+          addon: p.addon,
+          gross1: R.gross[0],
+          gross3: sum(R.gross),
+          ts: new Date().toLocaleString("en-IN"),
+          R,
+        };
+        quoteHistory.unshift(rec);
+        saveHistory();
+        renderHistoryGrid();
+        updateDashboard();
+        document.getElementById("quoteRef").value =
+          "QT-" + Date.now().toString().slice(-6);
+        toast("Quote saved! " + ref, "success");
+      }
+
+      function resetCalc() {
+        document.getElementById("exPrice").value = "";
+        document.getElementById("ncb").value = "0";
+        document.getElementById("odDisc").value = "45";
+        document.getElementById("nonElec").value = "0";
+        document.getElementById("elecAcc").value = "0";
+        document.getElementById("cng").value = "0";
+        document.getElementById("paPass").value = "100000";
+        document.getElementById("singleResults").style.display = "none";
+        lastR = null;
+      }
+
+      function switchDetailTab(id, el) {
+        document
+          .querySelectorAll(".detail-tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".detail-content")
+          .forEach((t) => t.classList.remove("active"));
+        el.classList.add("active");
+        document.getElementById("tab-" + id).classList.add("active");
+      }
+
+      // ════════════════════════════════════════════════════════
+      //  BULK UPLOAD
+      // ════════════════════════════════════════════════════════
+      let bulkData = [],
+        bulkFiltered = [],
+        bulkPage = 1,
+        bulkPerPage = 25,
+        bulkSortKey = "",
+        bulkSortAsc = true;
+
+      function onDragOver(e) {
+        e.preventDefault();
+        document.getElementById("dropZone").classList.add("drag-over");
+      }
+      function onDragLeave(e) {
+        document.getElementById("dropZone").classList.remove("drag-over");
+      }
+      function onDrop(e) {
+        e.preventDefault();
+        document.getElementById("dropZone").classList.remove("drag-over");
+        const f = e.dataTransfer.files[0];
+        if (f) handleFileUpload(f);
+      }
+
+      function handleFileUpload(file) {
+        if (!file) return;
+        if (!/\.(xlsx|xls|csv)$/i.test(file.name)) {
+          toast("Only .xlsx, .xls, .csv files supported", "error");
+          return;
+        }
+        toast("Reading file: " + file.name, "info");
+        showProgress(30);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            showProgress(60);
+            const wb = XLSX.read(e.target.result, { type: "binary" });
+            const ws = wb.Sheets[wb.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(ws, { defval: "" });
+            showProgress(85);
+            bulkData = json.map((row, i) => mapRow(row, i));
+            bulkFiltered = [...bulkData];
+            showProgress(100);
+            setTimeout(() => {
+              document.getElementById("progressWrap").style.display = "none";
+              document.getElementById("bulkArea").style.display = "block";
+              renderBulkTable();
+              updateBulkSummary();
+              updateDashboard();
+              toast(`Loaded ${bulkData.length} records!`, "success");
+            }, 400);
+          } catch (err) {
+            toast("Error reading file: " + err.message, "error");
+            showProgress(0);
+          }
+        };
+        reader.readAsBinaryString(file);
+      }
+
+      function mapRow(row, idx) {
+        // Flexible column name mapping
+        const get = (keys, def = "") => {
+          for (const k of keys) {
+            const v =
+              row[k] ??
+              row[k.toLowerCase()] ??
+              row[k.toUpperCase()] ??
+              row[k.replace(/_/g, " ")];
+            if (v !== undefined && v !== "") return v;
+          }
+          return def;
+        };
+        const ex = +get(
+          [
+            "Ex_Showroom",
+            "ExShowroom",
+            "ex_showroom",
+            "Ex-Showroom",
+            "EX_SHOWROOM",
+            "Price",
+          ],
+          0,
+        );
+        const cc = normCC(
+          get(["CC", "Cubic_Capacity", "CubicCapacity", "cc"], "1000-1500"),
+        );
+        const zone = String(get(["Zone", "ZONE", "zone"], "B"))
+          .toUpperCase()
+          .replace("ZONE ", "");
+        const mt = normMT(
+          get(["Model_Type", "ModelType", "model_type", "Type"], "Premium"),
+        );
+        const addon = get(
+          ["Addon", "Add_on", "AddOn", "ADDON"],
+          "Not Required",
+        );
+        const odDisc = +get(
+          ["OD_Discount", "OD Discount", "ODDiscount", "od_discount"],
+          45,
+        );
+        const ncb = +get(["NCB", "ncb"], 0);
+        const ne = +get(["Non_Elec", "NonElec", "non_elec"], 0);
+        const ea = +get(["Elec", "ElecAcc", "Electrical", "elec_acc"], 0);
+        const cng = +get(["CNG", "cng"], 0);
+        const atd = normYN(get(["ATD", "atd"], "No"));
+        const aa = normYN(get(["AA", "aa"], "No"));
+        const paPass = +get(["PA_Pass", "PAPass", "pa_pass"], 100000);
+        const insurer = normBrand(
+          get(
+            [
+              "Insurer",
+              "insurer",
+              "Brand",
+              "brand",
+              "Calculator",
+              "calculator",
+            ],
+            "hyundai",
+          ),
+        );
+        const valid = ex > 0 && isValidBrand(insurer);
+        const R = valid
+          ? calcInsurance({
+              brand: insurer,
+              ex,
+              cc,
+              zone,
+              mt,
+              addon,
+              odDisc,
+              ncb,
+              ne,
+              ea,
+              cng,
+              paPass,
+              atd,
+              aa,
+              geo: "No",
+            })
+          : null;
+        return {
+          idx: idx + 1,
+          insurer,
+          ex,
+          cc,
+          zone,
+          mt,
+          addon,
+          odDisc,
+          ncb,
+          ne,
+          ea,
+          cng,
+          atd,
+          aa,
+          paPass,
+          valid,
+          R,
+          premium: R ? R.gross[0] : 0,
+          premium3: R ? sum(R.gross) : 0,
+          error: !valid
+            ? ex <= 0
+              ? "Missing Ex-Showroom"
+              : "Invalid Brand — use: " + BRAND_LIST.join(", ")
+            : null,
+        };
+      }
+
+      function normCC(v) {
+        const s = String(v).toLowerCase();
+        if (
+          s.includes("below") ||
+          s.includes("<") ||
+          s === "below1000" ||
+          s === "lt1000"
+        )
+          return "below1000";
+        if (
+          s.includes("above") ||
+          s.includes(">") ||
+          s === "above1500" ||
+          s === "gt1500"
+        )
+          return "above1500";
+        return "1000-1500";
+      }
+      function normMT(v) {
+        const s = String(v).toLowerCase();
+        return s.includes("others") || s.includes("other")
+          ? "Others"
+          : "Premium";
+      }
+      function normYN(v) {
+        return String(v).toLowerCase() === "yes" ? "Yes" : "No";
+      }
+
+      function getAddonOptions(brand, modelType) {
+        const cfg = getBrandCfg(brand);
+        const addonRates =
+          cfg.addonRates[modelType] ||
+          cfg.addonRates[cfg.modelTypes[0]] ||
+          cfg.addonRates[Object.keys(cfg.addonRates)[0]];
+        return Object.keys(addonRates);
+      }
+
+      function renderBulkTable() {
+        const start = (bulkPage - 1) * bulkPerPage,
+          end = Math.min(start + bulkPerPage, bulkFiltered.length);
+        const rows = bulkFiltered.slice(start, end);
+        const tbody = document.getElementById("bulkBody");
+        tbody.innerHTML = rows
+          .map(
+            (d, i) => `
+    <tr class="${d.valid ? "" : "err-row"}" id="brow-${d.idx}">
+      <td>${start + i + 1}</td>
+      <td>
+        <select onchange="bulkFieldChange(${d.idx},'insurer',this.value)" style="min-width:150px">
+          ${BRAND_LIST.map((b) => `<option value="${b}" ${d.insurer === b ? "selected" : ""}>${BRAND_LABELS[b]}</option>`).join("")}
+        </select>
+      </td>
+      <td><input type="number" value="${d.ex || ""}" placeholder="Ex-showroom" onchange="bulkFieldChange(${d.idx},'ex',this.value)" style="min-width:120px"></td>
+      <td>
+        <select onchange="bulkFieldChange(${d.idx},'cc',this.value)">
+          ${["below1000", "1000-1500", "above1500"].map((o) => `<option ${d.cc === o ? "selected" : ""}>${o}</option>`).join("")}
+        </select>
+      </td>
+      <td>
+        <select onchange="bulkFieldChange(${d.idx},'zone',this.value)">
+          ${["A", "B"].map((o) => `<option ${d.zone === o ? "selected" : ""}>${o}</option>`).join("")}
+        </select>
+      </td>
+      <td>
+        <select onchange="bulkFieldChange(${d.idx},'mt',this.value)">
+          ${["Premium", "Others"].map((o) => `<option ${d.mt === o ? "selected" : ""}>${o}</option>`).join("")}
+        </select>
+      </td>
+      <td>
+        <select onchange="bulkFieldChange(${d.idx},'addon',this.value)" style="min-width:100px">
+          ${getAddonOptions(d.insurer, d.mt)
+            .map(
+              (o) => `<option ${d.addon === o ? "selected" : ""}>${o}</option>`,
+            )
+            .join("")}
+        </select>
+      </td>
+      <td><input type="number" value="${d.odDisc}" min="0" max="70" onchange="bulkFieldChange(${d.idx},'odDisc',this.value)" style="min-width:60px"></td>
+      <td><input type="number" value="${d.ncb}" min="0" onchange="bulkFieldChange(${d.idx},'ncb',this.value)"></td>
+      <td><input type="number" value="${d.ne}" min="0" onchange="bulkFieldChange(${d.idx},'ne',this.value)"></td>
+      <td><input type="number" value="${d.ea}" min="0" onchange="bulkFieldChange(${d.idx},'ea',this.value)"></td>
+      <td><input type="number" value="${d.cng}" min="0" onchange="bulkFieldChange(${d.idx},'cng',this.value)"></td>
+      <td><select onchange="bulkFieldChange(${d.idx},'atd',this.value)"><option ${d.atd === "No" ? "selected" : ""}>No</option><option ${d.atd === "Yes" ? "selected" : ""}>Yes</option></select></td>
+      <td><select onchange="bulkFieldChange(${d.idx},'aa',this.value)"><option ${d.aa === "No" ? "selected" : ""}>No</option><option ${d.aa === "Yes" ? "selected" : ""}>Yes</option></select></td>
+      <td><input type="number" value="${d.paPass}" min="0" onchange="bulkFieldChange(${d.idx},'paPass',this.value)"></td>
+      <td class="prem-cell">${d.premium > 0 ? fmt(d.premium) : "—"}</td>
+      <td>${d.valid ? `<span class="ok-badge">OK</span>` : `<span class="err-badge">ERR</span>`}</td>
+      <td><button class="btn-danger" style="padding:4px 8px;font-size:11px" onclick="deleteBulkRow(${d.idx})">✕</button></td>
+    </tr>
+  `,
+          )
+          .join("");
+        renderPagination();
+        document.getElementById("bulkCountBadge").textContent =
+          bulkFiltered.length + " rows";
+      }
+
+      function bulkFieldChange(idx, field, value) {
+        const rec = bulkData.find((r) => r.idx === idx);
+        if (!rec) return;
+        rec[field] =
+          field === "ex" ||
+          field === "odDisc" ||
+          field === "ncb" ||
+          field === "ne" ||
+          field === "ea" ||
+          field === "cng" ||
+          field === "paPass"
+            ? +value
+            : value;
+        const R = calcInsurance({
+          brand: rec.insurer,
+          ex: rec.ex,
+          cc: rec.cc,
+          zone: rec.zone,
+          mt: rec.mt,
+          addon: rec.addon,
+          odDisc: rec.odDisc,
+          ncb: rec.ncb,
+          ne: rec.ne,
+          ea: rec.ea,
+          cng: rec.cng,
+          paPass: rec.paPass,
+          atd: rec.atd,
+          aa: rec.aa,
+          geo: "No",
+        });
+        rec.valid = rec.ex > 0;
+        rec.R = R;
+        rec.premium = R ? R.gross[0] : 0;
+        rec.premium3 = R ? sum(R.gross) : 0;
+        rec.error = !rec.valid ? "Missing Ex-Showroom" : null;
+        const pCell = document.querySelector(`#brow-${idx} .prem-cell`);
+        if (pCell) pCell.textContent = rec.premium > 0 ? fmt(rec.premium) : "—";
+        updateBulkSummary();
+      }
+
+      function deleteBulkRow(idx) {
+        bulkData = bulkData.filter((r) => r.idx !== idx);
+        bulkFiltered = bulkFiltered.filter((r) => r.idx !== idx);
+        renderBulkTable();
+        updateBulkSummary();
+      }
+
+      function processBulk() {
+        let done = 0;
+        bulkData.forEach((d) => {
+          const R = calcInsurance({
+            brand: d.insurer,
+            ex: d.ex,
+            cc: d.cc,
+            zone: d.zone,
+            mt: d.mt,
+            addon: d.addon,
+            odDisc: d.odDisc,
+            ncb: d.ncb,
+            ne: d.ne,
+            ea: d.ea,
+            cng: d.cng,
+            paPass: d.paPass,
+            atd: d.atd,
+            aa: d.aa,
+            geo: "No",
+          });
+          d.R = R;
+          d.premium = R ? R.gross[0] : 0;
+          d.premium3 = R ? sum(R.gross) : 0;
+          d.valid = d.ex > 0;
+          done++;
+        });
+        bulkFiltered = [...bulkData];
+        renderBulkTable();
+        updateBulkSummary();
+        updateDashboard();
+        toast(`Processed ${done} records!`, "success");
+      }
+
+      // ════════════════════════════════════════════════════════
+      //  BULK BRAND SELECTOR — global brand switcher
+      // ════════════════════════════════════════════════════════
+      let activeBrandFilter = ""; // brand currently filtering the table
+
+      function onBulkBrandSelectChange() {
+        const brand = document.getElementById("bulkBrandSelect").value;
+        if (!brand) {
+          document.getElementById("bulkBrandInfoStrip").style.display = "none";
+          return;
+        }
+        const cfg = getBrandCfg(brand);
+        const tariff1500 = cfg.tariff["1000-1500"]
+          ? cfg.tariff["1000-1500"]["B"].toFixed(3)
+          : "—";
+        const tariffAbove = cfg.tariff["above1500"]
+          ? cfg.tariff["above1500"]["B"].toFixed(3)
+          : "—";
+        const tariffBelow = cfg.tariff["below1000"]
+          ? cfg.tariff["below1000"]["B"].toFixed(3)
+          : "—";
+        document.getElementById("bulkBrandInfoText").innerHTML =
+          `<strong>${cfg.label}</strong> — OD Tariff: ` +
+          `Below 1000cc <span class="brand-tariff-badge">${tariffBelow}%</span> · ` +
+          `1000–1500cc <span class="brand-tariff-badge">${tariff1500}%</span> · ` +
+          `Above 1500cc <span class="brand-tariff-badge">${tariffAbove}%</span> &nbsp;|&nbsp; ` +
+          `Default OD Disc: <span class="brand-tariff-badge">${cfg.defaultOdDisc}%</span> &nbsp;|&nbsp; ` +
+          `Model Types: <span class="brand-tariff-badge">${cfg.modelTypes.join(" / ")}</span>`;
+        document.getElementById("bulkBrandInfoStrip").style.display = "block";
+      }
+
+      // Apply selected brand to ALL rows — recalculate with brand logic
+      function applyBrandToAll() {
+        const brand = document.getElementById("bulkBrandSelect").value;
+        if (!brand) {
+          toast("Please select a brand calculator first!", "error");
+          return;
+        }
+        if (!bulkData.length) {
+          toast("No rows to apply brand to. Upload data first.", "error");
+          return;
+        }
+        const cfg = getBrandCfg(brand);
+        let updated = 0;
+        bulkData.forEach((d) => {
+          d.insurer = brand;
+          // Reset OD discount to brand default
+          d.odDisc = cfg.defaultOdDisc;
+          // Normalize model type to first valid type for this brand
+          if (!cfg.modelTypes.includes(d.mt)) {
+            d.mt = cfg.modelTypes[0];
+          }
+          const R = calcInsurance({
+            brand: d.insurer,
+            ex: d.ex,
+            cc: d.cc,
+            zone: d.zone,
+            mt: d.mt,
+            addon: d.addon,
+            odDisc: d.odDisc,
+            ncb: d.ncb,
+            ne: d.ne,
+            ea: d.ea,
+            cng: d.cng,
+            paPass: d.paPass,
+            atd: d.atd,
+            aa: d.aa,
+            geo: "No",
+          });
+          d.valid = d.ex > 0;
+          d.R = R;
+          d.premium = R ? R.gross[0] : 0;
+          d.premium3 = R ? sum(R.gross) : 0;
+          updated++;
+        });
+        bulkFiltered = [...bulkData];
+        renderBulkTable();
+        updateBulkSummary();
+        updateDashboard();
+        toast(
+          `✅ Applied ${BRAND_LABELS[brand]} to all ${updated} rows!`,
+          "success",
+        );
+      }
+
+      // Filter table to show only selected brand rows
+      function filterByBrand() {
+        const brand = document.getElementById("bulkBrandSelect").value;
+        if (!brand) {
+          toast("Please select a brand to filter.", "error");
+          return;
+        }
+        activeBrandFilter = brand;
+        const pill = document.getElementById("brandActivePill");
+        document.getElementById("brandPillText").textContent =
+          BRAND_LABELS[brand];
+        pill.classList.add("show");
+        filterBulk();
+        const count = bulkFiltered.length;
+        toast(
+          `Showing ${count} row${count !== 1 ? "s" : ""} for ${BRAND_LABELS[brand]}`,
+          "info",
+        );
+      }
+
+      // Clear brand filter — show all rows
+      function clearBrandFilter() {
+        activeBrandFilter = "";
+        document.getElementById("brandActivePill").classList.remove("show");
+        filterBulk();
+      }
+
+      function filterBulk() {
+        const q = document.getElementById("bulkSearch").value.toLowerCase();
+        const status = document.getElementById("bulkFilterStatus").value;
+        bulkFiltered = bulkData.filter((d) => {
+          const matchQ =
+            !q ||
+            [
+              BRAND_LABELS[d.insurer] || d.insurer,
+              d.cc,
+              d.zone,
+              d.mt,
+              d.addon,
+            ].some((v) => String(v).toLowerCase().includes(q));
+          const matchS =
+            !status ||
+            (status === "ok" && d.valid) ||
+            (status === "err" && !d.valid);
+          const matchB = !activeBrandFilter || d.insurer === activeBrandFilter;
+          return matchQ && matchS && matchB;
+        });
+        bulkPage = 1;
+        renderBulkTable();
+        updateBulkSummary();
+      }
+
+      function sortBulk(key) {
+        if (bulkSortKey === key) bulkSortAsc = !bulkSortAsc;
+        else {
+          bulkSortKey = key;
+          bulkSortAsc = true;
+        }
+        bulkFiltered.sort((a, b) =>
+          bulkSortAsc ? (a[key] > b[key] ? 1 : -1) : a[key] < b[key] ? 1 : -1,
+        );
+        renderBulkTable();
+      }
+
+      function clearBulk() {
+        bulkData = [];
+        bulkFiltered = [];
+        document.getElementById("bulkArea").style.display = "none";
+        toast("Bulk data cleared", "info");
+        updateDashboard();
+      }
+
+      function updateBulkSummary() {
+        const valid = bulkFiltered.filter((d) => d.valid).length;
+        const errors = bulkFiltered.filter((d) => !d.valid).length;
+        const totalEx = bulkFiltered.reduce((s, d) => s + (d.ex || 0), 0);
+        const totalP1 = bulkFiltered.reduce((s, d) => s + (d.premium || 0), 0);
+        const totalP3 = bulkFiltered.reduce((s, d) => s + (d.premium3 || 0), 0);
+        document.getElementById("bs-count").textContent = bulkFiltered.length;
+        document.getElementById("bs-valid").textContent = valid;
+        document.getElementById("bs-errors").textContent = errors;
+        document.getElementById("bs-exval").textContent = fmt(totalEx);
+        document.getElementById("bs-prem1").textContent = fmt(totalP1);
+        document.getElementById("bs-prem3").textContent = fmt(totalP3);
+      }
+
+      function renderPagination() {
+        const total = Math.ceil(bulkFiltered.length / bulkPerPage);
+        const pg = document.getElementById("bulkPagination");
+        if (total <= 1) {
+          pg.innerHTML = "";
+          return;
+        }
+        let html = "";
+        html += `<button class="pg-btn" onclick="gotoPage(${Math.max(1, bulkPage - 1)})">‹</button>`;
+        for (let i = 1; i <= total; i++) {
+          if (i === 1 || i === total || Math.abs(i - bulkPage) <= 1)
+            html += `<button class="pg-btn ${i === bulkPage ? "active" : ""}" onclick="gotoPage(${i})">${i}</button>`;
+          else if (Math.abs(i - bulkPage) === 2)
+            html += `<span class="pg-info">…</span>`;
+        }
+        html += `<button class="pg-btn" onclick="gotoPage(${Math.min(total, bulkPage + 1)})">›</button>`;
+        html += `<span class="pg-info">${bulkFiltered.length} total</span>`;
+        pg.innerHTML = html;
+      }
+
+      function gotoPage(p) {
+        bulkPage = p;
+        renderBulkTable();
+      }
+
+      function showProgress(pct) {
+        const w = document.getElementById("progressWrap");
+        const b = document.getElementById("progressBar");
+        w.style.display = "block";
+        b.style.width = pct + "%";
+        if (pct >= 100)
+          setTimeout(() => {
+            b.style.width = "0";
+          }, 600);
+      }
+
+      // ════════════════════════════════════════════════════════
+      //  HISTORY
+      // ════════════════════════════════════════════════════════
+      let quoteHistory = JSON.parse(
+        localStorage.getItem("ins_history") || "[]",
+      );
+
+      function saveHistory() {
+        localStorage.setItem(
+          "ins_history",
+          JSON.stringify(quoteHistory.slice(0, 100)),
+        );
+      }
+
+      function renderHistoryGrid(filter = "") {
+        const grid = document.getElementById("historyGrid");
+        const data = filter
+          ? quoteHistory.filter((q) =>
+              JSON.stringify(q).toLowerCase().includes(filter.toLowerCase()),
+            )
+          : quoteHistory;
+        if (!data.length) {
+          grid.innerHTML =
+            '<div style="text-align:center;padding:40px;color:var(--grey);font-family:var(--mono)">No saved quotes yet.</div>';
+          return;
+        }
+        grid.innerHTML = data
+          .map(
+            (q) => `
+    <div class="history-item" onclick="loadQuote('${q.id}')">
+      <div class="hist-left">
+        <div class="hist-id">${q.ts} · ${q.id}</div>
+        <div class="hist-title">${q.insurer}</div>
+        <div class="hist-sub">Ex-Showroom: ${fmt(q.ex)} · ${q.cc} · Zone ${q.zone} · ${q.mt}</div>
+      </div>
+      <div class="hist-prem">${fmt(q.gross1)}</div>
+    </div>
+  `,
+          )
+          .join("");
+      }
+
+      function loadQuote(id) {
+        const q = quoteHistory.find((h) => h.id === id);
+        if (!q) return;
+        switchNav("calculator", document.querySelectorAll(".nav-item")[1]);
+        document.getElementById("exPrice").value = q.ex;
+        document.getElementById("cc").value = q.cc;
+        document.getElementById("zone").value = q.zone;
+        document.getElementById("modelType").value = q.mt;
+        document.getElementById("addon").value = q.addon;
+        setTimeout(liveCalc, 100);
+        toast("Quote loaded: " + id, "info");
+      }
+
+      function filterHistory() {
+        renderHistoryGrid(document.getElementById("histSearch").value);
+      }
+
+      function clearHistory() {
+        if (!confirm("Clear all quote history?")) return;
+        quoteHistory = [];
+        saveHistory();
+        renderHistoryGrid();
+        updateDashboard();
+        toast("History cleared", "info");
+      }
+
+      // ════════════════════════════════════════════════════════
+      //  DASHBOARD
+      // ════════════════════════════════════════════════════════
+      function updateDashboard() {
+        const total = quoteHistory.length;
+        const totalPrem = quoteHistory.reduce((s, q) => s + q.gross3, 0);
+        const avg = total ? Math.round(totalPrem / total) : 0;
+        document.getElementById("ds-quotes").textContent = total;
+        document.getElementById("ds-prem").textContent = fmt(totalPrem);
+        document.getElementById("ds-avg").textContent = fmt(avg);
+        document.getElementById("ds-bulk").textContent = bulkData.length;
+        document.getElementById("quoteCount").textContent = total + " Quotes";
+        const recent = quoteHistory.slice(0, 5);
+        const grid = document.getElementById("dash-recent");
+        if (!recent.length) {
+          grid.innerHTML =
+            '<div style="color:var(--grey);font-family:var(--mono);font-size:13px;padding:20px 0;text-align:center">No quotes yet. Start by using the Calculator ›</div>';
+          return;
+        }
+        grid.innerHTML = `<table class="detail-tbl"><thead><tr><th>Quote ID</th><th>Insurer</th><th>Ex-Showroom</th><th>CC</th><th>Zone</th><th>1Y Premium</th><th>3Y Premium</th><th>Time</th></tr></thead>
+  <tbody>${recent.map((q) => `<tr><td>${q.id}</td><td>${q.insurer}</td><td>${fmt(q.ex)}</td><td>${q.cc}</td><td>${q.zone}</td><td style="color:var(--accent2)">${fmt(q.gross1)}</td><td style="color:var(--green)">${fmt(q.gross3)}</td><td>${q.ts}</td></tr>`).join("")}</tbody></table>`;
+      }
+
+      // ════════════════════════════════════════════════════════
+      //  EXCEL DOWNLOADS
+      // ════════════════════════════════════════════════════════
+      function buildExcelRows(R) {
+        return [
+          ["Hyundai / Kia Long Term Insurance Premium Calculator"],
+          [""],
+          ["VEHICLE DETAILS"],
+          ["Ex-showroom Price", R.ex],
+          ["Cubic Capacity", R.cc],
+          ["Registration Zone", "Zone " + R.zone],
+          ["Model Type", R.mt],
+          ["Add-on Product", R.addon],
+          ["OD Discount %", R.odDiscPct * 100 + "%"],
+          ["NCB Discount", R.ncb],
+          ["Non-Elec Accessories", R.ne],
+          ["Electrical Accessories", R.ea],
+          ["CNG Kit", R.cng],
+          ["ATD", R.atd ? "Yes" : "No"],
+          ["AA Membership", R.aa ? "Yes" : "No"],
+          [""],
+          ["SUMMARY"],
+          ["3Y TP + 1Y OD (Gross)", R.gross[0]],
+          ["3Y TP + 3Y OD (Gross)", sum(R.gross)],
+          [""],
+          ["IDV CALCULATION", "Year 1", "Year 2", "Year 3"],
+          ["Depreciation Rate", "5%", "20%", "30%"],
+          ["Vehicle IDV", ...R.idv],
+          ["Non-Elec IDV", ...R.neidv],
+          ["Electrical IDV", ...R.eaidv],
+          ["Total IDV", ...R.tidv],
+          [""],
+          [
+            "OWN DAMAGE PREMIUM (PART A)",
+            "Year 1",
+            "Year 2",
+            "Year 3",
+            "Total",
+          ],
+          ["Tariff Rate", R.tariff, R.tariff, R.tariff, ""],
+          ["Vehicle Basic OD", ...R.basicOD, sum(R.basicOD)],
+          ["Non-Elec Accessories", ...R.neP, sum(R.neP)],
+          ["Electrical Accessories", ...R.eaP, sum(R.eaP)],
+          ["Bi-Fuel CNG", ...R.cngP, sum(R.cngP)],
+          ["Add-on Premium", ...R.aoP, sum(R.aoP)],
+          ["PART A TOTAL", ...R.partA, sum(R.partA)],
+          [""],
+          ["LIABILITY PREMIUM (PART B)", "Amount"],
+          ["Basic Third Party Liability", R.tpl],
+          ["TP for Bi-Fuel Kit", R.tpcng],
+          ["PA Cover - Owner Driver (3Y)", R.paod],
+          ["PA Cover - Unnamed Passengers", R.paup],
+          ["Legal Liability - Paid Driver", R.llpd],
+          ["PART B TOTAL", R.partB],
+          [""],
+          ["GRAND TOTAL WITH GST", "Year 1", "Year 2", "Year 3", "3Y Total"],
+          ["Total Premium (A+B)", ...R.totalPrem, sum(R.totalPrem)],
+          ["GST (18%)", ...R.gst, sum(R.gst)],
+          ["Gross Premium", ...R.gross, sum(R.gross)],
+          [""],
+          [
+            "Zone A: Mumbai, Delhi, Chennai, Kolkata, Bengaluru, Hyderabad, Ahmedabad, Pune",
+          ],
+          ["Zone B: Rest of India"],
+        ];
+      }
+
+      function downloadSingleExcel() {
+        if (!lastR) {
+          toast("Calculate first!", "error");
+          return;
+        }
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(buildExcelRows(lastR));
+        ws["!cols"] = [
+          { wch: 38 },
+          { wch: 16 },
+          { wch: 16 },
+          { wch: 16 },
+          { wch: 16 },
+        ];
+        styleSheet(ws);
+        XLSX.utils.book_append_sheet(wb, ws, "Premium");
+        XLSX.writeFile(wb, "DealTrack_Premium_" + Date.now() + ".xlsx");
+        toast("Excel downloaded!", "success");
+      }
+
+      function downloadBulkExcel() {
+        if (!bulkData.length) {
+          toast("No bulk data!", "error");
+          return;
+        }
+        const wb = XLSX.utils.book_new();
+
+        // Summary Sheet
+        const sumRows = [
+          [
+            "Sr#",
+            "Brand",
+            "Ex-Showroom (₹)",
+            "CC",
+            "Zone",
+            "Model Type",
+            "Add-on",
+            "OD Disc%",
+            "NCB",
+            "Non-Elec",
+            "Elec Acc",
+            "CNG",
+            "ATD",
+            "AA",
+            "PA Pass",
+            "IDV Y1",
+            "OD Y1",
+            "TP",
+            "Add-on Y1",
+            "GST Y1",
+            "Gross 1Y",
+            "Gross 3Y",
+            "Status",
+          ],
+          ...bulkData.map((d) => [
+            d.idx,
+            BRAND_LABELS[d.insurer] || d.insurer,
+            d.ex,
+            d.cc,
+            d.zone,
+            d.mt,
+            d.addon,
+            d.odDisc,
+            d.ncb,
+            d.ne,
+            d.ea,
+            d.cng,
+            d.atd,
+            d.aa,
+            d.paPass,
+            d.R ? d.R.idv[0] : "",
+            d.R ? d.R.basicOD[0] : "",
+            d.R ? d.R.partB : "",
+            d.R ? d.R.aoP[0] : "",
+            d.R ? d.R.gst[0] : "",
+            d.premium || "",
+            d.premium3 || "",
+            d.valid ? "OK" : "ERROR",
+          ]),
+          [
+            "",
+            "TOTAL",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            bulkData.reduce((s, d) => s + (d.R ? d.R.basicOD[0] : 0), 0),
+            "",
+            "",
+            "",
+            bulkData.reduce((s, d) => s + (d.premium || 0), 0),
+            bulkData.reduce((s, d) => s + (d.premium3 || 0), 0),
+            "",
+          ],
+        ];
+        const ws = XLSX.utils.aoa_to_sheet(sumRows);
+        ws["!cols"] = Array(23).fill({ wch: 14 });
+        ws["!cols"][1] = { wch: 18 };
+        ws["!cols"][2] = { wch: 16 };
+        XLSX.utils.book_append_sheet(wb, ws, "Bulk Summary");
+
+        // Individual sheets for first 10
+        bulkData.slice(0, 10).forEach((d, i) => {
+          if (!d.R) return;
+          const ws2 = XLSX.utils.aoa_to_sheet(buildExcelRows(d.R));
+          ws2["!cols"] = [
+            { wch: 36 },
+            { wch: 15 },
+            { wch: 15 },
+            { wch: 15 },
+            { wch: 15 },
+          ];
+          XLSX.utils.book_append_sheet(wb, ws2, "Vehicle " + (i + 1));
+        });
+
+        XLSX.writeFile(wb, "Bulk_Insurance_Report_" + Date.now() + ".xlsx");
+        toast("Bulk Excel exported!", "success");
+      }
+
+      function downloadMasterExcel() {
+        if (!quoteHistory.length && !bulkData.length) {
+          toast("No data to export!", "error");
+          return;
+        }
+        const wb = XLSX.utils.book_new();
+        if (quoteHistory.length) {
+          const rows = [
+            [
+              "Quote ID",
+              "Insurer",
+              "Ex-Showroom",
+              "CC",
+              "Zone",
+              "Model Type",
+              "Add-on",
+              "Gross 1Y",
+              "Gross 3Y",
+              "Date",
+            ],
+            ...quoteHistory.map((q) => [
+              q.id,
+              q.insurer,
+              q.ex,
+              q.cc,
+              q.zone,
+              q.mt,
+              q.addon,
+              q.gross1,
+              q.gross3,
+              q.ts,
+            ]),
+          ];
+          XLSX.utils.book_append_sheet(
+            wb,
+            XLSX.utils.aoa_to_sheet(rows),
+            "Quote History",
+          );
+        }
+        if (bulkData.length) downloadBulkExcel();
+        else XLSX.writeFile(wb, "DealTrack_Master_" + Date.now() + ".xlsx");
+        toast("Master export done!", "success");
+      }
+
+      function downloadTemplate() {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet([
+          [
+            "Brand",
+            "Ex_Showroom",
+            "CC",
+            "Zone",
+            "Model_Type",
+            "Addon",
+            "OD_Discount",
+            "NCB",
+            "Non_Elec",
+            "Elec",
+            "CNG",
+            "ATD",
+            "AA",
+            "PA_Pass",
+          ],
+          [
+            "hyundai",
+            1209000,
+            "1000-1500",
+            "B",
+            "Premium",
+            "ZD+EP+CM+RTI",
+            45,
+            0,
+            0,
+            0,
+            0,
+            "No",
+            "No",
+            100000,
+          ],
+          [
+            "kia",
+            800000,
+            "below1000",
+            "A",
+            "Others",
+            "Not Required",
+            40,
+            0,
+            0,
+            0,
+            0,
+            "No",
+            "No",
+            100000,
+          ],
+          [
+            "mahindra",
+            2500000,
+            "above1500",
+            "B",
+            "Premium",
+            "ZD+RTI",
+            50,
+            5000,
+            15000,
+            10000,
+            0,
+            "Yes",
+            "No",
+            200000,
+          ],
+          [
+            "tata",
+            1100000,
+            "1000-1500",
+            "A",
+            "Premium",
+            "ZD+EP",
+            45,
+            0,
+            0,
+            0,
+            0,
+            "No",
+            "No",
+            100000,
+          ],
+          [
+            "mg",
+            1800000,
+            "above1500",
+            "B",
+            "Premium",
+            "ZD+CM+RTI",
+            50,
+            0,
+            10000,
+            0,
+            0,
+            "Yes",
+            "No",
+            200000,
+          ],
+        ]);
+        ws["!cols"] = [
+          { wch: 16 },
+          { wch: 14 },
+          { wch: 12 },
+          { wch: 6 },
+          { wch: 12 },
+          { wch: 18 },
+          { wch: 12 },
+          { wch: 8 },
+          { wch: 10 },
+          { wch: 8 },
+          { wch: 8 },
+          { wch: 6 },
+          { wch: 6 },
+          { wch: 10 },
+        ];
+        XLSX.utils.book_append_sheet(wb, ws, "Template");
+        XLSX.writeFile(wb, "Insurance_Bulk_Template.xlsx");
+        toast("Template downloaded!", "success");
+      }
+
+      function styleSheet(ws) {
+        // Basic header style using xlsx (limited in free version)
+        return ws;
+      }
+
+      // ════════════════════════════════════════════════════════
+      //  NAVIGATION
+      // ════════════════════════════════════════════════════════
+      const panelNames = {
+        dashboard: "Dashboard",
+        calculator: "Single Calculator",
+        bulk: "Bulk Upload",
+        history: "Quote History",
+      };
+      const panelSubs = {
+        dashboard: "Overview & analytics",
+        calculator: "Multi-Brand Insurance Premium Calculator",
+        bulk: "Upload & process Excel files",
+        history: "All saved premium quotes",
+      };
+
+      function switchNav(id, el) {
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((n) => n.classList.remove("active"));
+        document
+          .querySelectorAll(".panel")
+          .forEach((p) => p.classList.remove("active"));
+        el.classList.add("active");
+        document.getElementById("panel-" + id).classList.add("active");
+        document.getElementById("pageTitle").textContent = panelNames[id];
+        document.getElementById("pageSub").textContent = panelSubs[id];
+        if (id === "history") renderHistoryGrid();
+        if (id === "dashboard") updateDashboard();
+      }
+
+      // ════════════════════════════════════════════════════════
+      //  TOAST
+      // ════════════════════════════════════════════════════════
+      function toast(msg, type = "info") {
+        const el = document.createElement("div");
+        el.className = `toast ${type}`;
+        el.innerHTML = `<span>${type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️"}</span>${msg}`;
+        document.getElementById("toastWrap").appendChild(el);
+        setTimeout(() => el.remove(), 3500);
+      }
+
+      // ════════════════════════════════════════════════════════
+      //  INIT
+      // ════════════════════════════════════════════════════════
+      updateDashboard();
+      // Set default brand to Hyundai on load and populate model types
+      document.getElementById("insurer").value = "hyundai";
+      onBrandChange();
+      liveCalc();
+      document.getElementById("quoteRef").value =
+        "QT-" + Date.now().toString().slice(-6);
+    </script>
+  </body>
+</html>

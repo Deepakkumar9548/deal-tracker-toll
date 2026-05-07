@@ -1,0 +1,22 @@
+/* ─────────────────────────────────────────
+       UTILITIES & SCROLLBARS
+    ───────────────────────────────────────── */
+.mono { font-family: 'DM Mono', monospace; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ─────────────────────────────────────────
+       PRINT STYLES
+    ───────────────────────────────────────── */
+@media print {
+  html, body { overflow: visible; height: auto; }
+  .topbar, .sidebar, .btn-row, .search-bar, .docs-row { display: none !important; }
+  .shell { display: block; }
+  .main { overflow: visible; }
+  .page { display: block !important; padding: 0; }
+  body { background: #fff; color: #000; }
+  .card { border: 1px solid #ccc; background: #fff; }
+  .deal-table th { background: #f0f0f0 !important; color: #000 !important; }
+}

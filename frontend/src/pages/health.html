@@ -1,0 +1,47 @@
+<!-- PAGE: HEALTH -->
+<div id="page-health" class="page">
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">Status</div>
+      <div class="stat-val mono" id="h-status">CHECKING...</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Data Size</div>
+      <div class="stat-val mono" id="h-datasize">0 MB</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Storage</div>
+      <div class="stat-val mono" id="h-usage">0%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Capacity</div>
+      <div class="stat-val gold mono" id="h-users">0</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header ch-blue">🚀 Metrics</div>
+    <div style="position:absolute; top:12px; right:15px;"><button class="btn btn-save" onclick="generateHealthPPT()">📊 Download Report</button></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:15px;">
+      <div>
+        <div class="stat-label">RAM</div>
+        <div class="stat-val mono" id="h-memory">0 MB</div>
+      </div>
+      <div>
+        <div class="stat-label">Uptime</div>
+        <div class="stat-val mono" id="h-uptime">0 Hrs</div>
+      </div>
+      <div>
+        <div class="stat-label">Latency</div>
+        <div class="stat-val mono" id="h-latency">0 ms</div>
+      </div>
+    </div>
+  </div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+    <div class="card">
+      <div class="card-header ch-blue">📉 Latency</div><canvas id="latencyChart"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-header ch-gold">🧠 RAM</div><canvas id="memoryChart"></canvas>
+    </div>
+  </div>
+</div>

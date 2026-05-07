@@ -1,0 +1,327 @@
+<!-- PAGE: NEW DEAL -->
+<div id="page-new" class="page active">
+  <div class="form-top">
+    <div class="card">
+      <div class="card-header ch-blue">👤 Customer & Dealer Info</div>
+      <div class="field-pair">
+        <div class="pair-cell"><span class="pair-label">Deal ID</span><input type="text" id="f-dealId"
+            placeholder="Auto-generated" readonly></div>
+        <div class="pair-cell"><span class="pair-label">Project Name</span><select id="f-projectName">
+            <option value="">— Select —</option>
+            <option>Mahindra PV delhi ncr</option>
+            <option>Mahindra CV delhi ncr</option>
+            <option>Kia delhi ncr</option>
+            <option>Kia delhi</option>
+            <option>Mahindra PV lucknow</option>
+            <option>Mahindra CV lucknow</option>
+            <option>Kia lucknow</option>
+          </select></div>
+      </div>
+
+
+
+      <div class="field-pair">
+        <div class="pair-cell"><span class="pair-label">Customer Name</span><input type="text" id="f-cname"
+            placeholder="e.g. Ekta Sharma"></div>
+        <div class="pair-cell"><span class="pair-label">Customer Number</span><input type="text" id="f-cnum"
+            placeholder="+91 98765 43210"></div>
+      </div>
+      <div class="field-pair">
+        <div class="pair-cell"><span class="pair-label">Dealer Name</span><input type="text" id="f-dname"
+            placeholder="e.g. MGCP"></div>
+        <div class="pair-cell"><span class="pair-label">Dealership Location</span><input type="text" id="f-dlocation"
+            placeholder="City / Area"></div>
+      </div>
+      <div class="field-row"><span class="field-label">Dealer Code</span><input type="text" id="f-dcode"
+          placeholder="Dealer Code"></div>
+      <div class="field-row"><span class="field-label">SC Name & No</span><input type="text" id="f-scname"
+          placeholder="e.g. Vipul Gupta"></div>
+      <div class="field-row"><span class="field-label">Model & Variant</span><input type="text" id="f-model"
+          placeholder="e.g. Hector Sharp Pro MT P"></div>
+      <div class="field-pair" style="grid-template-columns:1fr 1fr 1fr;">
+        <div class="pair-cell"><span class="pair-label">Nature</span><select id="f-nature">
+            <option value="">— Select —</option>
+            <option>Inscope</option>
+            <option>Out of Scope</option>
+            <option>Corporate</option>
+            <option>Management Reference</option>
+          </select></div>
+        <div class="pair-cell"><span class="pair-label">Final Decision</span><select id="f-decision">
+            <option value="">— Select —</option>
+            <option>Breach</option>
+            <option>Not Breach</option>
+            <option>Hold</option>
+          </select></div>
+        <div class="pair-cell"><span class="pair-label">Mgmt Decision</span><select id="f-mgmt-decision">
+            <option value="">— Select —</option>
+            <option>Accepted</option>
+            <option>Contested</option>
+            <option>No Remarks</option>
+          </select></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header ch-gold">📅 Visit & Booking Info</div>
+      <div class="field-pair">
+        <div class="pair-cell"><span class="pair-label">Date of Visit</span><input type="date" id="f-dvisit"></div>
+        <div class="pair-cell"><span class="pair-label">Booking Amount</span><input type="number" id="f-booking"
+            placeholder="0"></div>
+      </div>
+      <div class="field-pair">
+        <div class="pair-cell"><span class="pair-label">Booking Date</span><input type="date" id="f-dbooking"></div>
+        <div class="pair-cell"><span class="pair-label">Delivery Date</span><input type="date" id="f-ddelivery"></div>
+      </div>
+      <div class="field-pair">
+        <div class="pair-cell"><span class="pair-label">Breach Date</span><input type="date" id="f-dbreach"></div>
+        <div class="pair-cell"><span class="pair-label">MS Date</span><input type="date" id="f-dms"></div>
+      </div>
+      <div class="field-pair">
+        <div class="pair-cell"><span class="pair-label">Date of Closed</span><input type="date" id="f-dclosed"></div>
+        <div class="pair-cell"><span class="pair-label">Observation Source</span><select id="f-source">
+            <option value="">— Select —</option>
+            <option>File Audit</option>
+            <option>Mystery Shop</option>
+            <option>Escalation</option>
+          </select></div>
+      </div>
+      <div class="card">
+
+        <div class="card-header ch-green">📎 Supporting Documents</div>
+        <div class="docs-row">
+          <label class="upload-pill" id="pill-audio"><span class="pill-dot"></span>Audio<input type="file"
+              onchange="pillDone('pill-audio', this)"></label>
+          <label class="upload-pill" id="pill-video"><span class="pill-dot"></span>Video<input type="file"
+              onchange="pillDone('pill-video', this)"></label>
+          <label class="upload-pill" id="pill-quot"><span class="pill-dot"></span>Quotation<input type="file"
+              onchange="pillDone('pill-quot', this)"></label>
+          <label class="upload-pill" id="pill-price"><span class="pill-dot"></span>Pricelist<input type="file"
+              onchange="pillDone('pill-price', this)"></label>
+          <label class="upload-pill" id="pill-ledger"><span class="pill-dot"></span>Ledger<input type="file"
+              onchange="pillDone('pill-ledger', this)"></label>
+          <label class="upload-pill" id="pill-slip"><span class="pill-dot"></span>Payment Slip<input type="file"
+              onchange="pillDone('pill-slip', this)"></label>
+          <label class="upload-pill" id="pill-other"><span class="pill-dot"></span>Other<input type="file"
+              onchange="pillDone('pill-other', this)"></label>
+          <label class="upload-pill pill-pc" id="pill-paycard"><span class="pill-dot"></span>Pay Card<input type="file"
+              onchange="pillDone('pill-paycard', this)"></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="obs-block">
+    <div class="obs-block-label">⚠ Observation Remarks</div>
+    <div class="obs-section">
+      <div class="obs-section-title">🔹 Extra Discount</div>
+      <div class="obs-text">An extra discount of <span class="dyn" id="obs-dyn-variance1">₹0</span> given.</div>
+      <input type="hidden" id="f-extraDisc">
+    </div>
+    <div class="obs-section">
+      <div class="obs-section-title">🔹 Observation Details</div>
+      <div class="obs-text">Discount of <span class="dyn" id="obs-dyn-variance2">₹0</span> was offered. Closed at <span
+          class="dyn" id="obs-dyn-actual">₹0.00</span> Lacs.</div>
+      <textarea id="f-obsDetails" placeholder="Observation details..." style="width:100%; margin-top:10px;"></textarea>
+    </div>
+    <div class="obs-section">
+      <div class="obs-section-title">🔹 Management Remarks</div>
+      <textarea id="f-mgmtRemarks" placeholder="Management remarks..." style="width:100%; margin-top:10px;"></textarea>
+    </div>
+    <div class="obs-section">
+      <div class="obs-section-title">🔹 Additional Remarks</div>
+      <textarea id="f-additionalRemarks" placeholder="Additional remarks..."
+        style="width:100%; margin-top:10px;"></textarea>
+    </div>
+  </div>
+
+
+
+  <div class="form-tables">
+    <div class="card">
+      <div class="card-header ch-blue">💰 Deal Breakup</div>
+      <table class="deal-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Should Be</th>
+            <th>Actual</th>
+            <th>Var</th>
+          </tr>
+        </thead>
+        <tbody id="deal-tbody">
+          <tr data-label="Ex Showroom">
+            <td>Ex Showroom</td>
+            <td><input class="sb" type="number" oninput="calcDeal()"></td>
+            <td><input class="ac" type="number" oninput="calcDeal()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Registration">
+            <td>Registration</td>
+            <td><input class="sb" type="number" oninput="calcDeal()"></td>
+            <td><input class="ac" type="number" oninput="calcDeal()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Accessories">
+            <td>Accessories</td>
+            <td><input class="sb" type="number" oninput="calcDeal()"></td>
+            <td><input class="ac" type="number" oninput="calcDeal()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Insurance">
+            <td>Insurance</td>
+            <td><input class="sb" type="number" oninput="calcDeal()"></td>
+            <td><input class="ac" type="number" oninput="calcDeal()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="RSA">
+            <td>RSA</td>
+            <td><input class="sb" type="number" oninput="calcDeal()"></td>
+            <td><input class="ac" type="number" oninput="calcDeal()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="TCS">
+            <td>TCS</td>
+            <td><input class="sb" type="number" oninput="calcDeal()"></td>
+            <td><input class="ac" type="number" oninput="calcDeal()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Fast Tag">
+            <td>Fast Tag</td>
+            <td><input class="sb" type="number" oninput="calcDeal()"></td>
+            <td><input class="ac" type="number" oninput="calcDeal()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Other">
+            <td>Other</td>
+            <td><input class="sb" type="number" oninput="calcDeal()"></td>
+            <td><input class="ac" type="number" oninput="calcDeal()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Extended Warranty">
+            <td>EW</td>
+            <td><input class="sb" type="number" oninput="calcDeal()"></td>
+            <td><input class="ac" type="number" oninput="calcDeal()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Speed Gov">
+            <td>Speed Gov</td>
+            <td><input class="sb" type="number" oninput="calcDeal()"></td>
+            <td><input class="ac" type="number" oninput="calcDeal()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="deal-table">
+        <tbody>
+          <tr class="row-total">
+            <td>Net Deal</td>
+            <td><input id="deal-sb-total" readonly></td>
+            <td><input id="deal-ac-total" readonly></td>
+            <td><input id="deal-vr-total" readonly></td>
+          </tr>
+          <tr class="row-discount">
+            <td>Discount</td>
+            <td><input id="disc-sb" readonly></td>
+            <td><input id="disc-ac" readonly></td>
+            <td><input id="disc-vr" readonly></td>
+          </tr>
+          <tr class="row-total">
+            <td>Total Deal</td>
+            <td><input id="total-sb" readonly></td>
+            <td><input id="total-ac" readonly></td>
+            <td><input id="total-vr" readonly></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-header ch-red">🏷 Discount Breakup</div>
+      <table class="deal-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Should Be</th>
+            <th>Actual</th>
+            <th>Variance</th>
+          </tr>
+
+        </thead>
+        <tbody id="disc-tbody">
+          <tr data-label="Cash Disc">
+            <td>Cash Discount</td>
+            <td><input class="dsb" type="number" oninput="calcDisc()"></td>
+            <td><input class="dac" type="number" oninput="calcDisc()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Acc Disc">
+            <td>Accessories Discount</td>
+            <td><input class="dsb" type="number" oninput="calcDisc()"></td>
+            <td><input class="dac" type="number" oninput="calcDisc()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Corp Disc">
+            <td>Corporate Discount</td>
+            <td><input class="dsb" type="number" oninput="calcDisc()"></td>
+            <td><input class="dac" type="number" oninput="calcDisc()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Ins Disc">
+            <td>Insurance Discount</td>
+            <td><input class="dsb" type="number" oninput="calcDisc()"></td>
+            <td><input class="dac" type="number" oninput="calcDisc()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="EW Disc">
+            <td>EW Discount</td>
+            <td><input class="dsb" type="number" oninput="calcDisc()"></td>
+            <td><input class="dac" type="number" oninput="calcDisc()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Dealer Disc">
+            <td>Dealer Discount</td>
+            <td><input class="dsb" type="number" oninput="calcDisc()"></td>
+            <td><input class="dac" type="number" oninput="calcDisc()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="MS Disc">
+            <td>MS Discount</td>
+            <td><input class="dsb" type="number" oninput="calcDisc()"></td>
+            <td><input class="dac" type="number" oninput="calcDisc()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Other Disc">
+            <td>Other Discount</td>
+            <td><input class="dsb" type="number" oninput="calcDisc()"></td>
+            <td><input class="dac" type="number" oninput="calcDisc()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+          <tr data-label="Loyalty Disc">
+            <td>Loyalty Discount</td>
+            <td><input class="dsb" type="number" oninput="calcDisc()"></td>
+            <td><input class="dac" type="number" oninput="calcDisc()"></td>
+            <td><input class="vr" readonly></td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="deal-table">
+        <tbody>
+          <tr class="row-total">
+            <td>Total Discount</td>
+            <td><input id="disc-total-sb" readonly></td>
+            <td><input id="disc-total-ac" readonly></td>
+          </tr>
+          <tr class="row-variance">
+            <td>Variance</td>
+            <td colspan="2"><input id="disc-variance" readonly></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" id="clear-btn">🗑 Clear</button>
+    <button class="btn btn-save" id="save-btn">✅ Save Deal</button>
+  </div>
+</div>

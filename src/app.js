@@ -13,19 +13,16 @@ const dealRoutes = require("./modules/deals/routes/deal.routes");
 dotenv.config();
 
 const app = express();
-const backendRoot = path.join(__dirname, "..");
-const frontendRoot = path.join(backendRoot, "..", "frontend", "src");
-let compression = null;
 
-try {
-  compression = require("compression");
-} catch (_) {
-  compression = null;
-}
+// Path logic for Vercel (assuming frontend folder is moved inside backend)
+const frontendRoot = path.join(__dirname, "..", "frontend", "src");
+
+// Connect to Database immediately for Vercel/Serverless environment
+connectDB();
+
 
 app.use("/api/", apiLimiter);
 app.use(cors());
-if (compression) app.use(compression());
 app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 
@@ -79,4 +76,5 @@ const startServer = async () => {
   });
 };
 
-module.exports = { app, startServer };
+module.exports = app;
+

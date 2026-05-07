@@ -1,0 +1,48 @@
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-section">Main Menu</div>
+  <div class="nav-item active" onclick="switchTab('new')" id="nav-new">
+    <span class="nav-icon">➕</span>New Deal
+  </div>
+  <div class="nav-item" onclick="switchTab('records')" id="nav-records">
+    <span class="nav-icon">📋</span>All Records
+    <span class="nav-badge" id="nav-badge">0</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('summary')" id="nav-summary">
+    <span class="nav-icon">📊</span>Summary
+  </div>
+  <div class="nav-item" onclick="switchTab('health')" id="nav-health">
+    <span class="nav-icon">🛡️</span>App Health
+  </div>
+  <div class="nav-item" onclick="switchTab('calculator')" id="nav-calculator">
+    <span class="nav-icon">🧮</span>Calculator
+  </div>
+  <div class="nav-item" onclick="switchTab('tl-report')" id="nav-tl-report">
+    <span class="nav-icon">📑</span>TL Report
+  </div>
+  <div class="nav-item" onclick="window.location.href='/pages/mis_v6.html'" id="nav-mis">
+    <span class="nav-icon">📈</span>MIS
+  </div>
+
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">Quick Stats</div>
+  <div class="sidebar-stats">
+    <div class="sstat">
+      <div class="sstat-label">Total Deals</div>
+      <div class="sstat-val gold" id="sb-total">0</div>
+    </div>
+    <div class="sstat">
+      <div class="sstat-label">Total Variance</div>
+      <div class="sstat-val neg" id="sb-variance">₹0</div>
+    </div>
+    <div class="sstat">
+      <div class="sstat-label">Total Business</div>
+      <div class="sstat-val pos" id="sb-business">₹0</div>
+    </div>
+  </div>
+
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">Actions</div>
+  <div class="nav-item" id="export-csv-btn" onclick="exportExcel()"><span class="nav-icon">📥</span>Export Excel</div>
+  <div class="nav-item" onclick="clearForm(); switchTab('new')"><span class="nav-icon">🗑</span>Clear Form</div>
+</nav>

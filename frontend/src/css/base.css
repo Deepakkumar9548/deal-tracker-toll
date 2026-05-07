@@ -1,0 +1,46 @@
+/* ─────────────────────────────────────────
+       CSS CUSTOM PROPERTIES (Design Tokens)
+    ───────────────────────────────────────── */
+:root {
+  --bg: #0b0b0f;
+  --bg2: #111117;
+  --bg3: #18181f;
+  --bg4: #1f1f28;
+  --border: rgba(255, 255, 255, 0.06);
+  --border2: rgba(255, 255, 255, 0.11);
+  --accent: #c8a96e;
+  --accent2: #e8c98e;
+  --red: #e05c5c;
+  --green: #5cb87a;
+  --blue: #5c9fe0;
+  --purple: #b87ae0;
+  --text: #e8e6e0;
+  --text2: #9e9b92;
+  --text3: #4e4c47;
+  --card: #111117;
+  --input-bg: #0b0b0f;
+  --sidebar-w: 220px;
+}
+
+/* ─────────────────────────────────────────
+       RESET & BASE
+    ───────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,65 @@
+/* ─────────────────────────────────────────
+       DEAL / DISCOUNT TABLES
+    ───────────────────────────────────────── */
+.deal-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.deal-table th { background: var(--bg3); color: var(--text2); font-size: 10px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+.deal-table td { padding: 3px 8px; border-bottom: 1px solid var(--border); color: var(--text); }
+.deal-table td:first-child { color: var(--text2); font-size: 11px; }
+
+/* Inline inputs inside table cells */
+.deal-table td input { background: transparent; border: none; width: 100%; font-size: 12px; color: var(--text); padding: 3px 4px; height: 25px; border-radius: 4px; }
+.deal-table td input:focus { background: var(--bg3); border: 1px solid rgba(200, 169, 110, 0.3); }
+.deal-table td input[readonly] { color: var(--text2); }
+
+.row-total td { background: rgba(255, 255, 255, 0.025); font-weight: 600; }
+.row-total td input[readonly] { color: var(--accent) !important; font-weight: 600; }
+.row-variance td { background: rgba(224, 92, 92, 0.06); }
+.row-variance td input[readonly] { color: var(--red) !important; font-weight: 600; }
+.row-discount td { background: rgba(200, 169, 110, 0.04); }
+
+/* ─────────────────────────────────────────
+       ALL RECORDS TABLE
+    ───────────────────────────────────────── */
+.search-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; align-items: center; }
+.search-bar input { max-width: 340px; }
+.search-bar .is-hidden { display: none; }
+.search-bar .btn { transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease; }
+.search-bar .btn.active { box-shadow: 0 0 0 2px rgba(200, 169, 110, 0.22); transform: translateY(-1px); }
+.search-bar .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.records-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.records-table th { background: var(--bg3); color: var(--text2); font-size: 10px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; padding: 9px 14px; border-bottom: 1px solid var(--border); text-align: left; }
+.records-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+.records-table .select-cell { width: 0; min-width: 0; max-width: 0; text-align: center; padding-left: 0; padding-right: 0; opacity: 0; overflow: hidden; transition: width 0.22s ease, min-width 0.22s ease, max-width 0.22s ease, padding 0.22s ease, opacity 0.18s ease; }
+.records-table.bulk-mode .select-cell { width: 42px; min-width: 42px; max-width: 42px; padding-left: 10px; padding-right: 10px; opacity: 1; }
+.records-table input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var(--accent); cursor: pointer; }
+.records-table tr:hover td { background: var(--bg3); cursor: pointer; }
+.records-table tr.active td { background: rgba(200, 169, 110, 0.1) !important; border-bottom: 1px solid var(--accent); color: var(--accent); }
+.records-table tr.selected td { background: rgba(46, 204, 113, 0.1) !important; border-bottom-color: rgba(46, 204, 113, 0.35); }
+.records-table tr.selected .id-tag { border-color: rgba(46, 204, 113, 0.5); color: #8ff0b2; }
+.id-tag { background: var(--bg3); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; font-weight: 500; border: 1px solid var(--border); }
+
+/* Column Filtering & Scrolling */
+.table-wrapper { width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); background: var(--bg2); margin-top: 10px; }
+.records-table th, .records-table td { white-space: nowrap; }
+.filter-row td { padding: 4px 8px; background: var(--bg2); border-bottom: 2px solid var(--border); }
+.col-filter { width: 100%; font-size: 10px; padding: 5px 8px; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--text); transition: all 0.2s; }
+.col-filter:focus { border-color: var(--accent); outline: none; background: var(--bg1); box-shadow: 0 0 0 2px rgba(200, 169, 110, 0.1); }
+.col-filter::placeholder { color: var(--text2); opacity: 0.5; }
+.view-link { color: var(--accent); text-decoration: underline; font-weight: 500; }
+.view-link:hover { color: #fff; }
+.records-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; padding: 12px 0; color: var(--text2); font-size: 12px; }
+.records-pagination .btn { min-width: 78px; }
+.records-pagination .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Empty State */
+.empty { padding: 40px; text-align: center; color: var(--text2); font-style: italic; background: var(--bg3); border-radius: 8px; border: 1px dashed var(--border); }
+
+@media (max-width: 720px) {
+  .search-bar { align-items: stretch; }
+  .search-bar input,
+  .search-bar .btn { width: 100%; max-width: none; }
+  .records-pagination { justify-content: stretch; }
+  .records-pagination .btn { flex: 1; }
+}
+
+/* ─────────────────────────────────────────

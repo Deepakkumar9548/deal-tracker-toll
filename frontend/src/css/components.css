@@ -1,0 +1,239 @@
+/* ─────────────────────────────────────────
+       CARDS
+    ───────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.card-header {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.ch-blue {
+  background: rgba(92, 159, 224, 0.1);
+  color: #5c9fe0;
+  border: 1px solid rgba(92, 159, 224, 0.2);
+}
+
+.ch-red {
+  background: rgba(224, 92, 92, 0.1);
+  color: #e05c5c;
+  border: 1px solid rgba(224, 92, 92, 0.2);
+}
+
+.ch-gold {
+  background: rgba(200, 169, 110, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(200, 169, 110, 0.2);
+}
+
+.ch-green {
+  background: rgba(92, 184, 122, 0.1);
+  color: #5cb87a;
+  border: 1px solid rgba(92, 184, 122, 0.2);
+}
+
+/* ─────────────────────────────────────────
+       BUTTONS
+    ───────────────────────────────────────── */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text2);
+  transition: all 0.15s;
+}
+
+.btn:hover {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-save {
+  background: rgba(200, 169, 110, 0.12);
+  color: var(--accent);
+  border-color: rgba(200, 169, 110, 0.25);
+}
+
+.btn-save:hover {
+  background: rgba(200, 169, 110, 0.2);
+}
+
+.btn-add {
+  background: rgba(92, 159, 224, 0.1);
+  color: var(--blue);
+  border-color: rgba(92, 159, 224, 0.2);
+}
+
+.btn-del {
+  background: rgba(224, 92, 92, 0.08);
+  color: var(--red);
+  border-color: rgba(224, 92, 92, 0.2);
+  padding: 3px 8px;
+  font-size: 10px;
+}
+
+.btn-green {
+  background: rgba(92, 184, 122, 0.1);
+  color: var(--green);
+  border-color: rgba(92, 184, 122, 0.2);
+}
+
+/* Header Buttons (Smaller) */
+.hbtn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text2);
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hbtn:hover {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--bg4);
+}
+
+.hbtn-green {
+  background: rgba(92, 184, 122, 0.08);
+  color: var(--green);
+  border-color: rgba(92, 184, 122, 0.2);
+}
+
+.hbtn-ppt {
+  background: rgba(200, 169, 110, 0.08);
+  color: var(--accent);
+  border-color: rgba(200, 169, 110, 0.2);
+}
+
+/* ─────────────────────────────────────────
+       BADGES & STATUS
+    ───────────────────────────────────────── */
+.hbadge {
+  background: rgba(200, 169, 110, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(200, 169, 110, 0.22);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.badge-ok,
+.badge-nbr {
+  background: rgba(92, 184, 122, 0.12);
+  color: var(--green);
+  border: 1px solid rgba(92, 184, 122, 0.2);
+}
+
+.badge-var,
+.badge-breach {
+  background: rgba(224, 92, 92, 0.12);
+  color: var(--red);
+  border: 1px solid rgba(224, 92, 92, 0.2);
+}
+
+.badge-hold {
+  background: rgba(200, 169, 110, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(200, 169, 110, 0.2);
+}
+
+/* ─────────────────────────────────────────
+       DOCUMENT UPLOAD PILLS
+    ───────────────────────────────────────── */
+.docs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.upload-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 15px;
+  border-radius: 40px;
+  cursor: pointer;
+  background: rgba(92, 184, 122, 0.07);
+  border: 1.5px solid rgba(92, 184, 122, 0.35);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.15s;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.upload-pill:hover {
+  background: rgba(92, 184, 122, 0.15);
+  border-color: rgba(92, 184, 122, 0.65);
+}
+
+.upload-pill.done {
+  background: rgba(92, 184, 122, 0.2);
+  border-color: #5cb87a;
+}
+
+.upload-pill input[type=file] {
+  display: none;
+}
+
+.pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+
+.pill-pc {
+  background: rgba(184, 122, 224, 0.07);
+  border-color: rgba(184, 122, 224, 0.38);
+  color: var(--purple);
+}
+
+.pill-pc .pill-dot {
+  background: var(--purple);
+}
+
+.pill-pc:hover {
+  background: rgba(184, 122, 224, 0.15);
+  border-color: rgba(184, 122, 224, 0.65);
+}
+
+.pill-pc.done {
+  background: rgba(184, 122, 224, 0.2);
+  border-color: var(--purple);
+}

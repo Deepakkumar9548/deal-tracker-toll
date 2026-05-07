@@ -1,0 +1,22 @@
+# Terminal Environment Changes
+
+## Extension: Anthropic.claude-code
+
+- `CLAUDE_CODE_SSE_PORT=37245`
+
+## Extension: ms-python.python
+
+Enables `python.terminal.shellIntegration.enabled` by modifying `PYTHONSTARTUP` and `PYTHON_BASIC_REPL`
+
+- `PYTHONSTARTUP=c:\Users\Admin\AppData\Roaming\Antigravity\User\workspaceStorage\57ed21cbf65983a52f0aad5e778a2f43\ms-python.python\pythonrc.py`
+- `PYTHON_BASIC_REPL=1`
+
+## Extension: vscode.git
+
+Enables the following features: git auth provider
+
+- `GIT_ASKPASS=c:\Users\Admin\AppData\Local\Programs\Antigravity\resources\app\extensions\git\dist\askpass.sh`
+- `VSCODE_GIT_ASKPASS_NODE=C:\Users\Admin\AppData\Local\Programs\Antigravity\Antigravity.exe`
+- `VSCODE_GIT_ASKPASS_EXTRA_ARGS=`
+- `VSCODE_GIT_ASKPASS_MAIN=c:\Users\Admin\AppData\Local\Programs\Antigravity\resources\app\extensions\git\dist\askpass-main.js`
+- `VSCODE_GIT_IPC_HANDLE=\\.\pipe\vscode-git-2d70961447-sock`
